@@ -1,12 +1,11 @@
-/** Offer
- * @param {Object} fastify
+/** //Offer
  * @param {Object} offerProperties
  * @param {number} offerProperties.id
  * @param {string} offerProperties.description
  * @param {number} offerProperties.price
  * @param {number} offerProperties.customer_id
- * @returns {Object|null}r
  */
+
 export function createOffer(fastify, offerProperties) {
     const insertIntoStatement = fastify.db.prepare(
         `INSERT INTO offer (id, description, price, customer_id) VALUES (?, ?, ?, ?)`
@@ -33,10 +32,6 @@ export function createOffer(fastify, offerProperties) {
     }
 }
 
-/**
- * @param {Object} fastify
- * @returns {Array|null}
- */
 export function getOffers(fastify) {
     const statement = fastify.db.prepare(`SELECT * from offer`);
 
@@ -47,14 +42,8 @@ export function getOffers(fastify) {
         fastify.log.error(error);
         return null;
     }
-
 }
 
-/**
- * @param {Object} fastify
- * @param {Object} offerProperties
- * @returns {Object|null}
- */
 export function updateOffer(fastify, offerProperties) {
     const { id, ...updateFields } = offerProperties;
     const setClause = Object.keys(updateFields).map(key => `${key} = ?`).join(', ');
@@ -70,3 +59,16 @@ export function updateOffer(fastify, offerProperties) {
         return null;
     }
 }
+
+export function deleteOffer(fastify, offer_id) {
+    const statement = fastify.db.prepare(`DELETE FROM offer WHERE id = ?`);
+
+    try {
+        const info = statement.run(offer_id);
+        return info.changes > 0 ? `Offer with ID ${offer_id} deleted.` : `Offer with ID ${offer_id} not found.`;
+    } catch (error) {
+        fastify.log.error(error);
+        return `Error deleting offer with ID ${offer_id}.`;
+    }
+}
+

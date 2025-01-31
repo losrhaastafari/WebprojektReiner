@@ -36,12 +36,12 @@ const updateOfferOptions = {
         body: {
             type: "object",
             properties: {
-                id: { type: "integer" }, // Erforderlich, um das Angebot zu identifizieren
+                id: { type: "integer" },
                 description: { type: "string" },
                 price: { type: "number" },
                 customer_id: { type: "integer" },
             },
-            required: ["id"], // Nur die Offer-ID ist erforderlich
+            required: ["id"],
         },
         response: {
             200: {
@@ -67,4 +67,36 @@ const updateOfferOptions = {
     }
 };
 
-export { offerSchema, offerOptions, updateOfferOptions };
+const deleteOfferOptions = {
+    schema: {
+        params: {
+            type: "object",
+            properties: {
+                id: { type: "integer" }
+            },
+            required: ["id"]
+        },
+        response: {
+            200: {
+                type: "object",
+                properties: {
+                    message: { type: "string" }
+                }
+            },
+            400: {
+                type: "object",
+                properties: {
+                    error: { type: "string" }
+                }
+            },
+            404: {
+                type: "object",
+                properties: {
+                    error: { type: "string" }
+                }
+            }
+        }
+    }
+};
+
+export { offerSchema, offerOptions, updateOfferOptions, deleteOfferOptions };

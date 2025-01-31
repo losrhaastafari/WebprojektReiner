@@ -1,5 +1,5 @@
-import { offerOptions, updateOfferOptions } from "../schemas/offer.schema.js";
-import { createOffer, getOffers, updateOffer } from "../offer.js";
+import { offerOptions, updateOfferOptions, deleteOfferOptions } from "../schemas/offer.schema.js";
+import { createOffer, getOffers, updateOffer, deleteOffer } from "../offer.js";
 
 async function OfferRoutes(fastify, options) {
     fastify.post("/createOffer", offerOptions, async (request, reply) => {
@@ -26,6 +26,19 @@ async function OfferRoutes(fastify, options) {
             return { error: "Could not update offer" };
         }
         return { offer: updatedOffer };
+    });
+
+    fastify.delete("/deleteOffer", deleteOfferOptions, async (request, reply) => {
+        const { id } = request.body;
+        const result = deleteOffer(fastify, id);
+        if (result.includes("not found")) { 
+            return reply.code(404).send({ error: `Customer with ID ${id} not found.` });
+        }
+        if (!result) {
+            reply.code(400);
+            return { error: "Could not delete customer" };
+        }
+        return { message: result };
     });
 }
 
