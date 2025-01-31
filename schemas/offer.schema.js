@@ -31,4 +31,40 @@ const offerOptions = {
     }
 };
 
-export { offerSchema, offerOptions };
+const updateOfferOptions = {
+    schema: {
+        body: {
+            type: "object",
+            properties: {
+                id: { type: "integer" }, // Erforderlich, um das Angebot zu identifizieren
+                description: { type: "string" },
+                price: { type: "number" },
+                customer_id: { type: "integer" },
+            },
+            required: ["id"], // Nur die Offer-ID ist erforderlich
+        },
+        response: {
+            200: {
+                type: "object",
+                properties: {
+                    message: { type: "string" },
+                    updatedOffer: { $ref: "offerSchema#" }
+                }
+            },
+            400: {
+                type: "object",
+                properties: {
+                    error: { type: "string" }
+                }
+            },
+            404: {
+                type: "object",
+                properties: {
+                    error: { type: "string" }
+                }
+            }
+        }
+    }
+};
+
+export { offerSchema, offerOptions, updateOfferOptions };
