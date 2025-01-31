@@ -1,4 +1,4 @@
-import { offerOptions } from "../schemas/offer.schema.js";
+import { offerOptions, updateOfferOptions } from "../schemas/offer.schema.js";
 import { createOffer, getOffers, updateOffer } from "../offer.js";
 
 async function OfferRoutes(fastify, options) {
@@ -18,7 +18,7 @@ async function OfferRoutes(fastify, options) {
         return offers;
     });
 
-    fastify.put("/updateOffer", offerOptions, async (request, reply) => {
+    fastify.put("/updateOffer", updateOfferOptions, async (request, reply) => {
         const offerProperties = request.body;
         const updatedOffer = updateOffer(fastify, offerProperties);
         if (!updatedOffer) {
