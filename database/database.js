@@ -39,3 +39,4 @@ function dbConnector(fastify, options, next) {
 export default fp(dbConnector);
 
 //Test
+//waseem
