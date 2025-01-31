@@ -42,6 +42,22 @@ export function getCustomers (fastify) {
      }
 }
 
+export function updateCustomer(fastify, customerProperties) {
+    const { id, ...updateFields } = customerProperties;
+    const setClause = Object.keys(updateFields).map(key => `${key} = ?`).join(', ');
+    const values = Object.values(updateFields);
+
+    const statement = fastify.db.prepare(`UPDATE customerDB SET ${setClause} WHERE id = ?`);
+
+    try {
+        statement.run(...values, id);
+        return { id, ...customerProperties };
+    } catch (error) {
+        fastify.log.error(error);
+        return null;
+    }
+}
+
 export function deleteCustomer(fastify, customer_id) {
     const statement = fastify.db.prepare(`DELETE FROM customerDB WHERE id = ?`);
 
