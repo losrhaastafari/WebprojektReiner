@@ -69,7 +69,7 @@ const updateOfferOptions = {
 
 const deleteOfferOptions = {
     schema: {
-        params: {
+        body: {
             type: "object",
             properties: {
                 id: { type: "integer" }
@@ -83,13 +83,13 @@ const deleteOfferOptions = {
                     message: { type: "string" }
                 }
             },
-            400: {
+            404: {
                 type: "object",
                 properties: {
                     error: { type: "string" }
                 }
             },
-            404: {
+            400: {
                 type: "object",
                 properties: {
                     error: { type: "string" }
