@@ -41,3 +41,15 @@ export function getCustomers (fastify) {
         return null;
      }
 }
+
+export function deleteCustomer(fastify, customer_id) {
+    const statement = fastify.db.prepare(`DELETE FROM customerDB WHERE id = ?`);
+
+    try {
+        const info = statement.run(customer_id);
+        return info.changes > 0 ? `Customer with ID ${customer_id} deleted.` : `Customer with ID ${customer_id} not found.`;
+    } catch (error) {
+        fastify.log.error(error);
+        return `Error deleting customer with ID ${customer_id}.`;
+    }
+}
