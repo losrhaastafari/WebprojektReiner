@@ -20,11 +20,22 @@ const offerDB = `
     );
 `;
 
+const offerFiles = `
+    CREATE TABLE IF NOT EXISTS offer_files (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        offer_id INTEGER NOT NULL,
+        file_id TEXT NOT NULL UNIQUE,
+        file_path TEXT NOT NULL,
+        FOREIGN KEY (offer_id) REFERENCES offer (id)
+    );
+`;
+
 function dbConnector(fastify, options, next) {
     const db = new Database(filePath);
 
     db.exec(customerDB);
     db.exec(offerDB);
+    db.exec(offerFiles);
 
     fastify.decorate("db", db)
 
