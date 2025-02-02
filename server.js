@@ -9,6 +9,8 @@ import dbConnector from "./database/database.js";
 import { customerSchema } from "./schemas/customer.schema.js";
 import { offerSchema } from "./schemas/offer.schema.js";
 import path from "path";
+import cors from '@fastify/cors';
+
 
 const fastify = Fastify({
     logger: true
@@ -19,6 +21,20 @@ fastify.register(fastifyStatic, {
     root: path.join(process.cwd(), "assets"),
     prefix: "/assets/",
 });
+
+//CORS integration for Frontend Deployment
+
+fastify.register(cors, {
+    origin: (origin, callback) => {
+        const allowedOrigins = ['http://localhost:8080', 'http://localhost:3000'];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback (new Error('Not allowed by CORS'));
+        }
+    }
+});
+
 fastify.addSchema(customerSchema);
 fastify.register(CustomerRoutes, { prefix: "/Customer" });
 fastify.register(dbConnector);
