@@ -26,7 +26,17 @@ const offerFiles = `
         offer_id INTEGER NOT NULL,
         file_id TEXT NOT NULL UNIQUE,
         file_path TEXT NOT NULL,
-        FOREIGN KEY (offer_id) REFERENCES offer (id)
+        FOREIGN KEY (offer_id) REFERENCES offer (id) ON DELETE CASCADE
+    );
+`;
+
+const offerComments = `
+    CREATE TABLE IF NOT EXISTS offer_comments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        offer_id INTEGER NOT NULL,
+        comment TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (offer_id) REFERENCES offer (id) ON DELETE CASCADE
     );
 `;
 
@@ -36,6 +46,7 @@ function dbConnector(fastify, options, next) {
     db.exec(customerDB);
     db.exec(offerDB);
     db.exec(offerFiles);
+    db.exec(offerComments)
 
     fastify.decorate("db", db)
 
