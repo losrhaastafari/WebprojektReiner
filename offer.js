@@ -4,11 +4,12 @@
  * @param {string} offerProperties.description
  * @param {number} offerProperties.price
  * @param {number} offerProperties.customer_id
+ * @param {string} offerProperties.status
  */
 
 export function createOffer(fastify, offerProperties) {
     const insertIntoStatement = fastify.db.prepare(
-        `INSERT INTO offer (id, description, price, customer_id) VALUES (?, ?, ?, ?)`
+        `INSERT INTO offer (id, description, price, customer_id, status) VALUES (?, ?, ?, ?, ?)`
     );
     const selectStatement = fastify.db.prepare(
         `SELECT * from offer WHERE id=?`
@@ -19,11 +20,12 @@ export function createOffer(fastify, offerProperties) {
         description: offerProperties.description,
         price: offerProperties.price,
         customer_id: offerProperties.customer_id,
+        status: offerProperties.status,
     };
 
     try {
-        const { id, description, price, customer_id } = offerToCreate;
-        const info = insertIntoStatement.run(id, description, price, customer_id);
+        const { id, description, price, customer_id, status } = offerToCreate;
+        const info = insertIntoStatement.run(id, description, price, customer_id, status);
         const createdOffer = selectStatement.get(info.lastInsertRowid);
         return createdOffer;
     } catch (error) {

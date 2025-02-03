@@ -3,7 +3,16 @@ import { createOffer, getOffers, updateOffer, deleteOffer } from "../offer.js";
 
 async function OfferRoutes(fastify, options) {
     fastify.post("/createOffer", offerOptions, async (request, reply) => {
-        const offerProperties = request.body;
+        const { id, description, price, customer_id, status = "Draft" } = request.body;
+        
+        const offerProperties = {
+            id,
+            description,
+            price,
+            customer_id,
+            status
+        };
+        
         const offer = createOffer(fastify, offerProperties);
         reply.code(201);
         return { offer: offer };

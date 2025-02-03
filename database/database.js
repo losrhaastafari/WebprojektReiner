@@ -16,6 +16,7 @@ const offerDB = `
         description TEXT NOT NULL,
         price REAL NOT NULL,
         customer_id INTEGER NOT NULL,
+        status TEXT NOT NULL,
         FOREIGN KEY (customer_id) REFERENCES customerDB (id) ON DELETE CASCADE
     );
 `;
