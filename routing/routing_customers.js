@@ -1,5 +1,5 @@
 import { customerOptions, getCustomerOptions, deleteCustomerOptions, updateCustomerOptions } from "../schemas/customer.schema.js";
-import { createCustomer, deleteCustomer, getCustomers, updateCustomer } from "../customer.js";
+import { createCustomer, deleteCustomer, getCustomers, updateCustomer } from "../Function/customer.js";
 
 async function CustomerRoutes(fastify, options) {
     fastify.post("/createCustomer", customerOptions, async (request, reply) => {

@@ -8,6 +8,8 @@ import { CommentRoutes } from "./routing/routing_comments.js";
 import dbConnector from "./database/database.js";
 import { customerSchema } from "./schemas/customer.schema.js";
 import { offerSchema } from "./schemas/offer.schema.js";
+import { StatusRoutes } from "./routing/routing_status.js";
+import { changeStatusSchema } from "./schemas/status.schema.js";
 import path from "path";
 import cors from '@fastify/cors';
 
@@ -42,6 +44,8 @@ fastify.addSchema(offerSchema);
 fastify.register(OfferRoutes, { prefix: "/Offer" });
 fastify.register(FileRoutes, { prefix: "/Offer" });
 fastify.register(CommentRoutes, { prefix: "/Offer" });
+fastify.register(StatusRoutes, { prefix: "/Offer" });
+fastify.addSchema(changeStatusSchema);
 
 try {
     await fastify.listen({ port: 8080 });

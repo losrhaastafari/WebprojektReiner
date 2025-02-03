@@ -1,5 +1,5 @@
 import { offerOptions, updateOfferOptions, deleteOfferOptions } from "../schemas/offer.schema.js";
-import { createOffer, getOffers, updateOffer, deleteOffer } from "../offer.js";
+import { createOffer, getOffers, updateOffer, deleteOffer } from "../Function/offer.js";
 
 async function OfferRoutes(fastify, options) {
     fastify.post("/createOffer", offerOptions, async (request, reply) => {
@@ -30,6 +30,20 @@ async function OfferRoutes(fastify, options) {
     fastify.put("/updateOffer", updateOfferOptions, async (request, reply) => {
         const offerProperties = request.body;
         const updatedOffer = updateOffer(fastify, offerProperties);
+        const { id } = request.body;
+        const {username, } = request.headers;
+
+        const offer = fastify.db
+        .prepare("SELECT status FROM offer WHERE id = ?")
+        .get(id);
+
+        if (offer.status === "On Ice") {
+            return reply.code(400).send({ error: "Cannot update offers with Status 'On Ice'" });
+        }
+        else if (offer.status === "Active") {
+            return reply.code(400).send({ error: "Cannot update offers with Status 'Active'" });
+        }
+
         if (!updatedOffer) {
             reply.code(500);
             return { error: "Could not update offer" };

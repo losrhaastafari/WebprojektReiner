@@ -74,3 +74,14 @@ export function deleteOffer(fastify, offer_id) {
     }
 }
 
+export function updateOfferStatus(fastify, offer_id, status) {
+    const statement = fastify.db.prepare(`UPDATE offer SET status = ? WHERE id = ?`);
+
+    try {
+        statement.run(status, offer_id);
+        return { id: offer_id, status };
+    } catch (error) {
+        fastify.log.error(error);
+        return null;
+    }
+}

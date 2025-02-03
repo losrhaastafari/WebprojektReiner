@@ -41,6 +41,14 @@ const offerComments = `
     );
 `;
 
+const userDB = `
+    CREATE TABLE IF NOT EXISTS userDB (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL
+    );
+`;
+
 function dbConnector(fastify, options, next) {
     const db = new Database(filePath);
 
@@ -48,6 +56,7 @@ function dbConnector(fastify, options, next) {
     db.exec(offerDB);
     db.exec(offerFiles);
     db.exec(offerComments)
+    db.exec(userDB);
 
     fastify.decorate("db", db)
 

@@ -5,6 +5,13 @@ async function CommentRoutes(fastify, options) {
         const { offer_id } = request.params;
         const { comment } = request.body;
 
+        const offer = fastify.db
+        .prepare("SELECT status FROM offer WHERE id = ?")
+        .get(offer_id);
+        if (offer.status === "Draft") {
+            return reply.code(400).send({ error: "Cannot comment on offers with Status 'Draft'" });
+        }
+
         if (!offer_id || !comment) {
             return reply.code(400).send({ error: "Offer ID and comment are required" });
         }
