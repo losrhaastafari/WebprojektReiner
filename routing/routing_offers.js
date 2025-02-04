@@ -31,12 +31,27 @@ async function OfferRoutes(fastify, options) {
         const offerProperties = request.body;
         const updatedOffer = updateOffer(fastify, offerProperties);
         const { id } = request.body;
-        const {username, } = request.headers;
+        const {username, password} = request.headers;
 
+        const user = fastify.db
+            .prepare("SELECT * FROM userDB WHERE username = ? AND password = ?")
+            .get(username, password);
+
+        if (!user) {
+            return reply.code(401).send({ error: "Unauthorized: Invalid credentials" });
+        }
+
+        if (user.username === "User") {
+            return reply.code(403).send({ error: "Forbidden: User does not have permission to update offers" });
+        }
+        
+        
+        // Überprüfung, ob der Status des Angebots "On Ice" oder "Active" ist
         const offer = fastify.db
         .prepare("SELECT status FROM offer WHERE id = ?")
         .get(id);
 
+        
         if (offer.status === "On Ice") {
             return reply.code(400).send({ error: "Cannot update offers with Status 'On Ice'" });
         }
