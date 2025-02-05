@@ -19,14 +19,53 @@ async function OfferRoutes(fastify, options) {
     });
 
     fastify.get("/getOffers", async (request, reply) => {
-        const offers = getOffers(fastify);
-        if (!offers) {
-            reply.code(500);
-            return { error: "Could not get offers" };
+        // Extrahiere Filterparameter aus der Anfrage (query)
+        const { name, description, price, status, customer_id } = request.query;
+    
+        // Zuerst alle Angebote abrufen, wenn keine Filter vorhanden sind
+        let query = "SELECT * FROM offer WHERE 1=1"; // 1=1 ist eine triviale Bedingung, um die SQL-Logik zu vereinfachen
+        const params = [];
+    
+        // Dynamische Filter hinzufügen, wenn sie in der Anfrage enthalten sind
+        if (name) {
+            query += " AND description LIKE ?";
+            params.push(`%${name}%`);
         }
-        return offers;
+    
+        if (description) {
+            query += " AND description LIKE ?";
+            params.push(`%${description}%`);
+        }
+    
+        if (price) {
+            query += " AND price = ?";
+            params.push(price);
+        }
+    
+        if (status) {
+            query += " AND status = ?";
+            params.push(status);
+        }
+    
+        if (customer_id) {
+            query += " AND customer_id = ?";
+            params.push(customer_id);
+        }
+    
+        // Wenn keine Filter übergeben wurden, werden einfach alle Angebote zurückgegeben
+        try {
+            const offers = fastify.db.prepare(query).all(...params);
+    
+            if (offers.length === 0) {
+                reply.code(404).send({ error: "No offers found matching the criteria" });
+            } else {
+                return offers; // Gibt entweder alle Angebote oder die gefilterten zurück
+            }
+        } catch (err) {
+            reply.code(500).send({ error: "An error occurred while retrieving the offers" });
+        }
     });
-
+    
     fastify.put("/updateOffer", updateOfferOptions, async (request, reply) => {
         const offerProperties = request.body;
         const updatedOffer = updateOffer(fastify, offerProperties);

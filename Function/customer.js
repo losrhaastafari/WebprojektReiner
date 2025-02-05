@@ -1,49 +1,47 @@
 /** //Customer
  * @param {Object} customerproperties
- * @param {integer} customer.id
  * @param {string} customer.name
+ * @param {string} customer.address
+ * @param {string} customer.phone
+ * @param {string} customer.email
  */
-
 
 export function createCustomer(fastify, customerproperties) {
     const insertIntoStatement = fastify.db.prepare(
-        `INSERT INTO customerDB (id, name) VALUES (?, ?)`
+        `INSERT INTO customerDB (name, address, phone, email) VALUES (?, ?, ?, ?)`
     );
     const selectStatement = fastify.db.prepare(
-        `SELECT * from customerDB WHERE id=?`
+        `SELECT * FROM customerDB WHERE id=?`
     );
 
-    const customertoCreate = {
-        id: customerproperties.id,
-        name: customerproperties.name,
-    };
+    const { name, address, phone, email } = customerproperties;
 
     try {
-     const {id, name } = customertoCreate;
-     const info = insertIntoStatement.run(id, name);
-
-     const createdCustomer = selectStatement.get(info.lastInsertRowid);
-     return createdCustomer;
+        const info = insertIntoStatement.run(name, address, phone, email);
+        const createdCustomer = selectStatement.get(info.lastInsertRowid);
+        return createdCustomer;
     } catch (error) {
         fastify.log.error(error);
         return null;
     }
 }
 
-export function getCustomers (fastify) {
-     const statement = fastify.db.prepare(`SELECT * from customerDB`);
+export function getCustomers(fastify) {
+    const statement = fastify.db.prepare(`SELECT * FROM customerDB`);
 
-     try {
+    try {
         const customers = statement.all();
-     return customers;
-     } catch (error) {
+        return customers;
+    } catch (error) {
         fastify.log.error(error);
         return null;
-     }
+    }
 }
 
 export function updateCustomer(fastify, customerProperties) {
     const { id, ...updateFields } = customerProperties;
+
+    // Nur Felder, die im Update enthalten sind, werden bearbeitet
     const setClause = Object.keys(updateFields).map(key => `${key} = ?`).join(', ');
     const values = Object.values(updateFields);
 
@@ -51,7 +49,7 @@ export function updateCustomer(fastify, customerProperties) {
 
     try {
         statement.run(...values, id);
-        return { id, ...customerProperties };
+        return { id, ...customerProperties };  // Gebe den aktualisierten Customer zurück
     } catch (error) {
         fastify.log.error(error);
         return null;
@@ -63,7 +61,9 @@ export function deleteCustomer(fastify, customer_id) {
 
     try {
         const info = statement.run(customer_id);
-        return info.changes > 0 ? `Customer with ID ${customer_id} deleted.` : `Customer with ID ${customer_id} not found.`;
+        return info.changes > 0
+            ? `Customer with ID ${customer_id} deleted.`
+            : `Customer with ID ${customer_id} not found.`;
     } catch (error) {
         fastify.log.error(error);
         return `Error deleting customer with ID ${customer_id}.`;
