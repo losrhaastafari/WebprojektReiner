@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-
 export function transformAndSaveLegacyOffer(fastify, legacyData) {
     const { xCreatedOn, xCreatedBy, xSoftwareVersion, xOffer } = legacyData;
     const { customerId, price, currency, state, name, hints } = xOffer;
