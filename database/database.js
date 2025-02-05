@@ -6,7 +6,12 @@ const filePath ="./database/project.db";
 const customerDB = `
     CREATE TABLE IF NOT EXISTS customerDB (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name VARCHAR(50) NOT null
+        name TEXT NOT NULL,
+        adress TEXT NOT NULL,
+        phone TEXT NOT NULL,
+        email TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 `;
 
@@ -55,7 +60,7 @@ function dbConnector(fastify, options, next) {
     db.exec(customerDB);
     db.exec(offerDB);
     db.exec(offerFiles);
-    db.exec(offerComments)
+    db.exec(offerComments);
     db.exec(userDB);
 
     fastify.decorate("db", db)

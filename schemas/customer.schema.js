@@ -2,54 +2,63 @@ const customerSchema = {
     $id: "customerSchema",
     type: "object",
     properties: {
-        name: { type: "string" }
+        id: { type: "integer" },  // id wird vom System vergeben
+        name: { type: "string" },
+        address: { type: "string" },
+        phone: { type: "string" },
+        email: { type: "string" },
+        created_at: { type: "string", format: "date-time" },
+        updated_at: { type: "string", format: "date-time" },
     },
+    required: ["name", "address", "phone", "email"],  // 'id' ist nicht erforderlich, weil sie vom System vergeben wird
 };
-
 
 const customerOptions = {
     schema: {
         body: {
             type: "object",
             properties: {
-                id: {type: "integer"},
-                name: {type: "string"},
+                name: { type: "string" },
+                address: { type: "string" },
+                phone: { type: "string" },
+                email: { type: "string" },
             },
-            required: ["id", "name"],
+            required: ["name", "address", "phone", "email"],  // Keine ID erforderlich
         },
         response: {
             200: {
                 type: "object",
                 properties: {
-                    customer: { $ref: "customerSchema#"}
+                    customer: { $ref: "customerSchema#" }
                 }
             }
         }
     }
 };
 
-
 const getCustomerOptions = {
     schema: {
         response: {
             200: {
                 type: "array",
-                items: { $ref: "customerSchema#"},
+                items: { $ref: "customerSchema#" },
             },
         },
     },
-}
+};
 
 const updateCustomerOptions = {
     schema: {
         body: {
             type: "object",
             properties: {
-                id: { type: "integer" },
                 name: { type: "string" },
-                // Füge hier weitere Felder hinzu, die aktualisiert werden können
+                address: { type: "string" },
+                phone: { type: "string" },
+                email: { type: "string" },
+                updated_at: { type: "string", format: "date-time" },
             },
-            required: ["id"],
+            required: ["name", "address", "phone", "email"],  // Keine ID erforderlich
         },
         response: {
             200: {
@@ -114,4 +123,3 @@ const deleteCustomerOptions = {
 };
 
 export { customerOptions, customerSchema, getCustomerOptions, deleteCustomerOptions, updateCustomerOptions };
-
