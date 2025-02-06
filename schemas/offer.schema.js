@@ -16,7 +16,6 @@ const offerOptions = {
         body: {
             type: "object",
             properties: {
-                id: { type: "integer" },
                 description: { type: "string" },
                 price: { type: "number" },
                 customer_id: { type: "integer" },
@@ -25,7 +24,7 @@ const offerOptions = {
                     default: "Draft"  // Dokumentiert den Standardwert in der Validierung
                 }
             },
-            required: ["id", "description", "price", "customer_id", "status"],
+            required: ["description", "price", "customer_id", "status"],
         },
         response: {
             200: {

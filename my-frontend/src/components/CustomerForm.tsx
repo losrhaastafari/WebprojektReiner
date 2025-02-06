@@ -4,7 +4,7 @@ import axios from "axios";
 interface Customer {
   id?: number;
   name: string;
-  address: string;
+  adress: string;
   phone: string;
   email: string;
 }
@@ -15,22 +15,18 @@ interface CustomerFormProps {
 
 export default function CustomerForm({ onCustomerCreated }: CustomerFormProps) {
   const [name, setName] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
+  const [adress, setAdress] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [email, setEmail] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const customer: Customer = { name, address, phone, email };
+    const customer: Customer = { name, adress, phone, email };
 
-    try {
       const response = await axios.post("http://localhost:8080/Customer/createCustomer", customer);
       alert("Kunde erfolgreich erstellt!");
       onCustomerCreated(response.data);
-    } catch (error) {
-      alert("Fehler beim Erstellen des Kunden.");
-    }
   };
 
   return (
@@ -46,8 +42,8 @@ export default function CustomerForm({ onCustomerCreated }: CustomerFormProps) {
       <input
         type="text"
         placeholder="Adresse"
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
+        value={adress}
+        onChange={(e) => setAdress(e.target.value)}
         required
       />
       <input
