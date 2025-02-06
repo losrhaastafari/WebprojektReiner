@@ -4,13 +4,13 @@ const customerSchema = {
     properties: {
         id: { type: "integer" },  // id wird vom System vergeben
         name: { type: "string" },
-        address: { type: "string" },
+        adress: { type: "string" },
         phone: { type: "string" },
         email: { type: "string" },
         created_at: { type: "string", format: "date-time" },
         updated_at: { type: "string", format: "date-time" },
     },
-    required: ["name", "address", "phone", "email"],  // 'id' ist nicht erforderlich, weil sie vom System vergeben wird
+    required: ["name", "adress", "phone", "email"],  // 'id' ist nicht erforderlich, weil sie vom System vergeben wird
 };
 
 const customerOptions = {
@@ -19,11 +19,11 @@ const customerOptions = {
             type: "object",
             properties: {
                 name: { type: "string" },
-                address: { type: "string" },
+                adress: { type: "string" },
                 phone: { type: "string" },
                 email: { type: "string" },
             },
-            required: ["name", "address", "phone", "email"],  // Keine ID erforderlich
+            required: ["name", "adress", "phone", "email"],
         },
         response: {
             200: {
@@ -52,13 +52,14 @@ const updateCustomerOptions = {
         body: {
             type: "object",
             properties: {
+                id: { type: "integer" },
                 name: { type: "string" },
-                address: { type: "string" },
+                adress: { type: "string" },
                 phone: { type: "string" },
                 email: { type: "string" },
                 updated_at: { type: "string", format: "date-time" },
             },
-            required: ["name", "address", "phone", "email"],  // Keine ID erforderlich
+            required: ["id", "name", "adress", "phone", "email"],
         },
         response: {
             200: {
@@ -72,6 +73,7 @@ const updateCustomerOptions = {
                 type: "object",
                 properties: {
                     error: { type: "string" },
+                    message: { "type": "string" },
                 },
             },
             404: {

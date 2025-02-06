@@ -1,0 +1,20 @@
+meta {
+  name: CreateCustomer
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/Customer/createCustomer
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Julian",
+    "adress": "Oberringingen 18",
+    "phone": "01701295423",
+    "email": "julian.moehnle@gmail.com"
+  }
+}

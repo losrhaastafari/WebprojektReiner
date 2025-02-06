@@ -25,6 +25,7 @@ async function CustomerRoutes(fastify, options) {
             reply.code(500);
             return { error: "Could not update customer" };
         }
+        reply.code(200);
         return { customer: updatedCustomer };
     });
 

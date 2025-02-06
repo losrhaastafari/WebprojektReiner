@@ -1,0 +1,21 @@
+meta {
+  name: UpdateCustomer
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:8080/Customer/updateCustomer
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": 1,
+    "name": "T1",
+    "adress": "Oberringingen 18",
+    "phone": "01701295423",
+    "email": "simonmohnle@gmail.com"
+  }
+}
