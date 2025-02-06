@@ -6,6 +6,16 @@ meta {
 
 post {
   url: http://localhost:8080/Offer/createOffer
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "id": 12,
+    "description": "Hallo",
+    "price": 5,
+    "customer_id": 1,
+    "status": "On Ice"
+  }
 }
