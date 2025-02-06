@@ -29,13 +29,9 @@ export default function OfferForm({ onOfferCreated }: OfferFormProps) {
       status,
     };
 
-    try {
       const response = await axios.post("http://localhost:8080/Offer/createOffer", offer);
       alert("Angebot erfolgreich erstellt!");
       onOfferCreated(response.data);
-    } catch (error) {
-      alert("Fehler beim Erstellen des Angebots.");
-    }
   };
 
   return (
