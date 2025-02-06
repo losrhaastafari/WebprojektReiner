@@ -30,11 +30,11 @@ export default function CustomerForm({ onCustomerCreated }: CustomerFormProps) {
   };
 
   return (
-    <div className="container text-center mt-5">
+    <div className="container text-center m-5">
       <form onSubmit={handleSubmit}>
+      <div className="row m-3">
         <h3>Neuen Kunden erstellen</h3>
-
-        <div className="row mb-3">
+        
           <div className="col">
             <input
               type="text"

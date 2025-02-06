@@ -20,7 +20,7 @@ export default function CustomerList() {
   }, []);
 
   return (
-    <div className="container">
+    <div className="container p-5">
       <h3>Liste der Kunden</h3>
       <div className="row">
         {customers.map((customer) => (
