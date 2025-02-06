@@ -30,37 +30,56 @@ export default function CustomerForm({ onCustomerCreated }: CustomerFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>Neuen Kunden erstellen</h3>
-      <input
-        type="text"
-        placeholder="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        required
-      />
-      <input
-        type="text"
-        placeholder="Adresse"
-        value={adress}
-        onChange={(e) => setAdress(e.target.value)}
-        required
-      />
-      <input
-        type="text"
-        placeholder="Telefon"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        required
-      />
-      <input
-        type="email"
-        placeholder="E-Mail"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <button type="submit">Erstellen</button>
-    </form>
+    <div className="container text-center mt-5">
+      <form onSubmit={handleSubmit}>
+        <h3>Neuen Kunden erstellen</h3>
+
+        <div className="row mb-3">
+          <div className="col">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="col">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Adresse"
+              value={adress}
+              onChange={(e) => setAdress(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+        <div className="row mb-3">
+          <div className="col">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Telefon"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
+          </div>
+          <div className="col">
+            <input
+              type="email"
+              className="form-control"
+              placeholder="E-Mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+        <button type="submit" className="btn btn-primary">Erstellen</button>
+      </form>
+    </div>
   );
 }
