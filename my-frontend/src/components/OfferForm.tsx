@@ -36,6 +36,7 @@ export default function OfferForm({ onOfferCreated }: OfferFormProps) {
 
   return (
     <form onSubmit={handleSubmit}>
+      <div className="text-center ">
       <h3>Neues Angebot erstellen</h3>
       <input
         type="text"
@@ -64,6 +65,9 @@ export default function OfferForm({ onOfferCreated }: OfferFormProps) {
         <option value="On Ice">On Ice</option>
       </select>
       <button type="submit">Erstellen</button>
+
+      </div>
+      
     </form>
   );
 }
