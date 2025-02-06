@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface Customer {
   id: number;
@@ -19,18 +20,24 @@ export default function CustomerList() {
   }, []);
 
   return (
-    <div>
+    <div className="container">
       <h3>Liste der Kunden</h3>
-      <ul>
+      <div className="row">
         {customers.map((customer) => (
-          <li key={customer.id}>
-            <strong>{customer.name}</strong><br />
-            Adresse: {customer.adress}<br />
-            Telefon: {customer.phone}<br />
-            E-Mail: {customer.email}
-          </li>
+          <div key={customer.id} className="col-md-4 mb-4">
+            <div className="card">
+              <div className="card-body">
+                <h5 className="card-title">{customer.name}</h5>
+                <p className="card-text">
+                  <strong>Adresse:</strong> {customer.adress}<br />
+                  <strong>Telefon:</strong> {customer.phone}<br />
+                  <strong>E-Mail:</strong> {customer.email}
+                </p>
+              </div>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
