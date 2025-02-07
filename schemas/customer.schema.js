@@ -31,6 +31,13 @@ const customerOptions = {
                 properties: {
                     customer: { $ref: "customerSchema#" }
                 }
+            },
+            400: {
+                type: "object",
+                properties: {
+                    error: { type: "string" },
+                    message: { "type": "string" },
+                },
             }
         }
     }

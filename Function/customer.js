@@ -16,15 +16,23 @@ export function createCustomer(fastify, customerproperties) {
         `SELECT * FROM customerDB WHERE id=?`
     );
 
+    const checkDuplicateStatement = fastify.db.prepare(
+        `SELECT * FROM customerDB WHERE name=? OR phone=? OR email=?`
+    );
+
     const { name, adress, phone, email } = customerproperties;
 
     try {
+        const duplicateCustomer = checkDuplicateStatement.get(name, phone, email);
+        if (duplicateCustomer) {
+            return { status: 400, error: "Customer with the same name, phone number, or email already exists." }; // 409 Conflict
+        }
         const info = insertIntoStatement.run(name, adress, phone, email);
         const createdCustomer = selectStatement.get(info.lastInsertRowid);
-        return createdCustomer;
+        return { status: 201, customer: createdCustomer }; // 201 Created
     } catch (error) {
         fastify.log.error(error);
-        return null;
+        return { status: 500, error: "An error occurred while creating the customer." }; // 500 Internal Server Error
     }
 }
 

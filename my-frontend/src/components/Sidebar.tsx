@@ -6,12 +6,17 @@ export default function Sidebar() {
 
   return (
     <div className="sidebar-info col-2 position-fixed">
-        <div className="list-group"> 
-            <div className="m-1 p-1">
-                <button className="btn btn-primary w-100" onClick={() => navigate('/customers')}>Kunden</button>
+        <div className="list-group">  
+            <div className="m-1 p-1"> 
+              <button className="btn btn-light flex-grow-1" onClick={() => navigate('/customers')}>
+              <i className="fas fa-solid fa-user mx-4"></i>
+                Kunden
+              </button>
             </div>
             <div className="m-1 p-1">
-                <button className="btn btn-primary w-100"  onClick={() => navigate('/offers')}>Angebote</button>
+                <button className="btn btn-light flex-grow-1"  onClick={() => navigate('/offers')}>
+                <i className="fa-solid fa-file mx-4"></i>
+                  Angebote</button>
             </div>
         </div>
     </div>

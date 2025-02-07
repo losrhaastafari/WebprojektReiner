@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 interface Customer {
   id: number;
@@ -20,23 +19,37 @@ export default function CustomerList() {
   }, []);
 
   return (
-    <div className="container p-5">
-      <h3>Liste der Kunden</h3>
+    <div className="container text-center border border-dark rounded mt-5">
       <div className="row">
-        {customers.map((customer) => (
-          <div key={customer.id} className="col-md-4 mb-4">
-            <div className="card">
-              <div className="card-body">
-                <h5 className="card-title">{customer.name}</h5>
-                <p className="card-text">
-                  <strong>Adresse:</strong> {customer.adress}<br />
-                  <strong>Telefon:</strong> {customer.phone}<br />
-                  <strong>E-Mail:</strong> {customer.email}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
+        <h1>Customer List</h1>
+      </div>
+      <div className="row">
+        <div className="col">
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>
+                <i className="fa-solid fa-user"></i>
+                </th>
+                <th>Name</th>
+                <th>Adresse</th>
+                <th>Telefon-Nr.</th>
+                <th>E-Mail</th>
+              </tr>
+            </thead>
+            <tbody>
+              {customers.map((customer) => (
+                <tr key={customer.id}>
+                  <td>{customer.id}</td>
+                  <td>{customer.name}</td>
+                  <td>{customer.adress}</td>
+                  <td>{customer.phone}</td>
+                  <td>{customer.email}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

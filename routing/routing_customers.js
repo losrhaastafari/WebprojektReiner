@@ -4,9 +4,16 @@ import { createCustomer, deleteCustomer, getCustomers, updateCustomer } from "..
 async function CustomerRoutes(fastify, options) {
     fastify.post("/createCustomer", customerOptions, async (request, reply) => {
         const customerproperties = request.body;
-        const customer = createCustomer(fastify, customerproperties);
-        reply.code(201);
-        return { customer: customer };
+        try {
+            const result = createCustomer(fastify, customerproperties);
+            if (result.error) {
+                return reply.code(result.status).send({ error: result.error });
+            }
+            reply.code(result.status).send({ customer: result.customer });
+        } catch (error) {
+            fastify.log.error(error);
+            reply.code(error.status).send({ error: error.error });
+        }
     });
 
     fastify.get("/getCustomers", getCustomerOptions, async (request, reply) => {
