@@ -1,5 +1,5 @@
-import { useState } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
 
 interface Customer {
   id?: number;
@@ -10,7 +10,7 @@ interface Customer {
 }
 
 interface CustomerFormProps {
-  onCustomerCreated: (customer: Customer) => void;
+  onCustomerCreated: () => void;
 }
 
 export default function CustomerForm({ onCustomerCreated }: CustomerFormProps) {
@@ -24,17 +24,26 @@ export default function CustomerForm({ onCustomerCreated }: CustomerFormProps) {
 
     const customer: Customer = { name, adress, phone, email };
 
+    try {
       const response = await axios.post("http://localhost:8080/Customer/createCustomer", customer);
-      alert("Kunde erfolgreich erstellt!");
-      onCustomerCreated(response.data);
-  };
+      if (response.status === 201) {
+        alert(response.data.message || "Kunde erfolgreich erstellt!");
+        onCustomerCreated(); // Callback-Funktion aufrufen
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        alert(error.response.data.error);
+      } else {
+        alert("Fehler beim Erstellen des Kunden: " + error.message);
+      }
+    }
+  }; 
 
   return (
-    <div className="container text-center m-5">
+    <div className="container text-center mt-5">
       <form onSubmit={handleSubmit}>
-      <div className="row m-3">
         <h3>Neuen Kunden erstellen</h3>
-        
+        <div className="row mb-3">
           <div className="col">
             <input
               type="text"
@@ -45,6 +54,8 @@ export default function CustomerForm({ onCustomerCreated }: CustomerFormProps) {
               required
             />
           </div>
+        </div>
+        <div className="row mb-3">
           <div className="col">
             <input
               type="text"
@@ -81,5 +92,4 @@ export default function CustomerForm({ onCustomerCreated }: CustomerFormProps) {
         <button type="submit" className="btn btn-primary">Erstellen</button>
       </form>
     </div>
-  );
-}
+  )}; 
