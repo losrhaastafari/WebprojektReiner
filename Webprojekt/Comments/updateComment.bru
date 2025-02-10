@@ -1,0 +1,17 @@
+meta {
+  name: updateComment
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:8080/Offer/1/comments/2
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "comment": "Test Update"
+  }
+}

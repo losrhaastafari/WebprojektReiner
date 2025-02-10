@@ -1,0 +1,29 @@
+meta {
+  name: transformAndSaveLegacyOffer
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/Legacy/legacyOffer
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "xCreatedOn": "2024-10-20T00:00:00Z",
+    "xCreatedBy": "Luise Fröhlich",
+    "xSoftwareVersion": "1.2.0",
+    "xOffer": {
+      "customerId": 3,
+      "price": 56000,
+      "currency": "EUR",
+      "state": "On-Ice",
+      "name": "Offer 2",
+      "hints": [
+        "Toller Kunde sollten wir definitiv gewinnen!"
+      ]
+    }
+  }
+}
