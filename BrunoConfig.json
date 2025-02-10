@@ -1,0 +1,455 @@
+{
+  "name": "Webprojekt",
+  "version": "1",
+  "items": [
+    {
+      "type": "folder",
+      "name": "Comments",
+      "items": [
+        {
+          "type": "http",
+          "name": "deleteComment",
+          "seq": 4,
+          "request": {
+            "url": "http://localhost:8080/Offer/1/comments/2",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "getComment",
+          "seq": 2,
+          "request": {
+            "url": "http://localhost:8080/Offer/1/comments",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "postComment",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:8080/Offer/1/comments",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"comment\": \"Test Kommentar\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "updateComment",
+          "seq": 3,
+          "request": {
+            "url": "http://localhost:8080/Offer/1/comments/2",
+            "method": "PUT",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"comment\": \"Test Update\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Customer",
+      "items": [
+        {
+          "type": "http",
+          "name": "createCustomer",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:8080/Customer/createCustomer",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"name\": \"Waseem\",\n  \"adress\": \"Blumenstr\",\n  \"phone\": \"123\",\n  \"email\": \"dajusduan@ndausdn.de\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "deleteCustomer",
+          "seq": 3,
+          "request": {
+            "url": "http://localhost:8080/Customer/deleteCustomer",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"id\": 1\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "updateCustomer",
+          "seq": 2,
+          "request": {
+            "url": "http://localhost:8080/Customer/updateCustomer",
+            "method": "PUT",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"id\": 1,\n  \"Name\": \"Simon Moehnle\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Files & Assets",
+      "items": [
+        {
+          "type": "http",
+          "name": "getAssets",
+          "seq": 3,
+          "request": {
+            "url": "http://localhost:8080/assets/3e75d2bd-ee0d-4aab-95be-3319bc7c2e90.txt",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "getFiles",
+          "seq": 2,
+          "request": {
+            "url": "http://localhost:8080/Offer/1/files",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "uploadFile",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:8080/Offer/1/files",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "multipartForm",
+              "formUrlEncoded": [],
+              "multipartForm": [
+                {
+                  "type": "file",
+                  "name": "file",
+                  "value": [
+                    "C:\\Users\\MSI\\Documents\\GitHub\\WebprojektReiner\\assets\\details.txt"
+                  ],
+                  "enabled": true
+                }
+              ]
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Legacy",
+      "items": [
+        {
+          "type": "http",
+          "name": "transformAndSaveLegacyOffer",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:8080/Legacy/legacyOffer",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"xCreatedOn\": \"2024-10-20T00:00:00Z\",\n  \"xCreatedBy\": \"Luise Fröhlich\",\n  \"xSoftwareVersion\": \"1.2.0\",\n  \"xOffer\": {\n    \"customerId\": 3,\n    \"price\": 56000,\n    \"currency\": \"EUR\",\n    \"state\": \"On-Ice\",\n    \"name\": \"Offer 2\",\n    \"hints\": [\n      \"Toller Kunde sollten wir definitiv gewinnen!\"\n    ]\n  }\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Offers",
+      "items": [
+        {
+          "type": "http",
+          "name": "createOffer",
+          "seq": 2,
+          "request": {
+            "url": "http://localhost:8080/Offer/createOffer",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"description\": \"xoso\",\n  \"price\": 5,\n  \"customer_id\": 1\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "deleteOffer",
+          "seq": 4,
+          "request": {
+            "url": "http://localhost:8080/Offer/deleteOffer",
+            "method": "DELETE",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"id\": 2\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "getOffers",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:8080/Customers/getOffers",
+            "method": "GET",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "updateOffer",
+          "seq": 3,
+          "request": {
+            "url": "http://localhost:8080/Offer/updateOffer",
+            "method": "PUT",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"id\": 2,\n  \"description\": \"Updated\",\n  \"price\": 65,\n  \"customer_id\": 2\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "folder",
+      "name": "Testing",
+      "items": [
+        {
+          "type": "http",
+          "name": "generateTestData",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost:8080/Test/generateTestData",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "json",
+              "json": "{}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "docs": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "environments": [],
+  "brunoConfig": {
+    "version": "1",
+    "name": "Webprojekt",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ]
+  }
+}
