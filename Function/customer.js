@@ -17,15 +17,15 @@ export function createCustomer(fastify, customerproperties) {
     );
 
     const checkDuplicateStatement = fastify.db.prepare(
-        `SELECT * FROM customerDB WHERE name=? OR phone=? OR email=?`
+        `SELECT * FROM customerDB WHERE phone=? OR email=?`
     );
 
     const { name, adress, phone, email } = customerproperties;
 
     try {
-        const duplicateCustomer = checkDuplicateStatement.get(name, phone, email);
+        const duplicateCustomer = checkDuplicateStatement.get(phone, email);
         if (duplicateCustomer) {
-            return { status: 400, error: "Customer with the same name, phone number, or email already exists." }; // 409 Conflict
+            return { status: 400, error: "Customer with the same phone number, or email already exists." }; // 400 Bad Request
         }
         const info = insertIntoStatement.run(name, adress, phone, email);
         const createdCustomer = selectStatement.get(info.lastInsertRowid);

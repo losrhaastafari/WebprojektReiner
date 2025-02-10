@@ -5,7 +5,14 @@ meta {
 }
 
 post {
-  url: http://localhost:8080/createUser
-  body: none
+  url: http://localhost:8080/User/createUser
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "username": "account-manager",
+    "password": "accmanag"
+  }
 }
