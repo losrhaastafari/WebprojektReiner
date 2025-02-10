@@ -16,7 +16,6 @@ export default function App() {
 
   return (
     <Router>
-      <div className="container-fluid">
         <div className="row">
           <div className="col">
             <Sidebar />
@@ -34,7 +33,6 @@ export default function App() {
             </Routes>
           </div>
         </div>
-      </div>
     </Router>
   );
 }

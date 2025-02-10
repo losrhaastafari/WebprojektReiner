@@ -1,5 +1,6 @@
 import { offerOptions, updateOfferOptions, deleteOfferOptions } from "../schemas/offer.schema.js";
 import { createOffer, getOffers, updateOffer, deleteOffer } from "../Function/offer.js";
+import { canModifyOffer } from "../OfferValidation/ChangeOfferwithStatusValidation.js";
 
 async function OfferRoutes(fastify, options) {
     fastify.post("/createOffer", offerOptions, async (request, reply) => {
@@ -71,7 +72,11 @@ async function OfferRoutes(fastify, options) {
         const updatedOffer = updateOffer(fastify, offerProperties);
         const { id } = request.body;
         const {username, password} = request.headers;
-
+    
+        if (canModifyOffer(fastify, id)) {                                                           //OfferValidation
+            return reply.code(400).send({ error: "Cannot update offers with Status 'On Ice'" });
+        }
+        
         const user = fastify.db
             .prepare("SELECT * FROM userDB WHERE username = ? AND password = ?")
             .get(username, password);
@@ -84,20 +89,6 @@ async function OfferRoutes(fastify, options) {
             return reply.code(403).send({ error: "Forbidden: User does not have permission to update offers" });
         }
         
-        
-        // Überprüfung, ob der Status des Angebots "On Ice" oder "Active" ist
-        const offer = fastify.db
-        .prepare("SELECT status FROM offer WHERE id = ?")
-        .get(id);
-
-        
-        if (offer.status === "On Ice") {
-            return reply.code(400).send({ error: "Cannot update offers with Status 'On Ice'" });
-        }
-        else if (offer.status === "Active") {
-            return reply.code(400).send({ error: "Cannot update offers with Status 'Active'" });
-        }
-
         if (!updatedOffer) {
             reply.code(500);
             return { error: "Could not update offer" };
