@@ -1,6 +1,6 @@
 import { offerOptions, updateOfferOptions, deleteOfferOptions } from "../schemas/offer.schema.js";
 import { createOffer, getOffers, updateOffer, deleteOffer } from "../Function/offer.js";
-import { canModifyOffer } from "../OfferValidation/ChangeOfferwithStatusValidation.js";
+import { canModifyOffer } from "../OfferValidation/CanModifyOffer.js";
 
 async function OfferRoutes(fastify, options) {
     fastify.post("/createOffer", offerOptions, async (request, reply) => {
@@ -72,28 +72,30 @@ async function OfferRoutes(fastify, options) {
         const updatedOffer = updateOffer(fastify, offerProperties);
         const { id } = request.body;
         const {username, password} = request.headers;
-    
-        if (canModifyOffer(fastify, id)) {                                                           //OfferValidation
-            return reply.code(400).send({ error: "Cannot update offers with Status 'On Ice'" });
-        }
+
         
-        const user = fastify.db
-            .prepare("SELECT * FROM userDB WHERE username = ? AND password = ?")
-            .get(username, password);
+        //Fehlermeldung, falls keine Anmeldedaten übermittelt wurden!
 
-        if (!user) {
-            return reply.code(401).send({ error: "Unauthorized: Invalid credentials" });
+        if (!username || !password) {
+            return reply.code(401).send({ error: "Unauthorized: Missing credentials" });
         }
-
-        if (user.username === "User") {
-            return reply.code(403).send({ error: "Forbidden: User does not have permission to update offers" });
+    
+        //Berechtigungsprüfung mit canModifyOffer()
+    
+        const updateOfferpermissionCheck = canModifyOffer(fastify, id, username, password, "update_offer");
+        
+        if (updateOfferpermissionCheck.status !== 200) {                                                 
+            return reply.code(updateOfferpermissionCheck.status).send({ error: updateOfferpermissionCheck.error });
         }
         
         if (!updatedOffer) {
-            reply.code(500);
-            return { error: "Could not update offer" };
+            return reply.code(500).send({ error: "Could not update offer"});
         }
-        return { offer: updatedOffer };
+
+        return reply.code(200).send({
+            message: "Offer successfully updated.",
+            offer: updatedOffer
+        })
     });
 
     fastify.delete("/deleteOffer", deleteOfferOptions, async (request, reply) => {

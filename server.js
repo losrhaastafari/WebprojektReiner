@@ -42,6 +42,8 @@ fastify.register(cors, {
     }
 });
 
+
+
 fastify.addSchema(customerSchema);
 fastify.addSchema(offerSchema);
 fastify.addSchema(legacyOfferSchema);
