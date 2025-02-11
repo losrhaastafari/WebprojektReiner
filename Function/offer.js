@@ -54,11 +54,16 @@ export function updateOffer(fastify, offerProperties) {
     const statement = fastify.db.prepare(`UPDATE offer SET ${setClause} WHERE id = ?`);
 
     try {
-        statement.run(...values, id);
-        return { id, ...offerProperties };
+        const result = statement.run(...values, id);
+        
+        if (result.changes > 0) {
+            return { message: "Angebot erfolgreich aktualisiert!", id, ...offerProperties };
+        } else {
+            return { error: "Keine Änderungen vorgenommen oder Angebot nicht gefunden." };
+        }
     } catch (error) {
         fastify.log.error(error);
-        return null;
+        return { error: "Fehler beim Aktualisieren des Angebots." };
     }
 }
 

@@ -27,14 +27,15 @@ async function CustomerRoutes(fastify, options) {
 
     fastify.put("/updateCustomer", updateCustomerOptions, async (request, reply) => {
         const customerProperties = request.body;
-        const updatedCustomer = updateCustomer(fastify, customerProperties);
-        if (!updatedCustomer) {
-            reply.code(500);
-            return { error: "Could not update customer" };
+        const result = updateCustomer(fastify, customerProperties);
+    
+        if (result.error) {
+            return reply.code(result.status).send({ error: result.error });
         }
-        reply.code(200);
-        return { customer: updatedCustomer };
+        return reply.code(result.status).send({ message: result.message, updatedCustomer: result.updatedCustomer });
     });
+      
+    
 
     fastify.delete("/deleteCustomer", deleteCustomerOptions, async (request, reply) => {
         const { id } = request.body;

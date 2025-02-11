@@ -63,12 +63,12 @@ function dbConnector(fastify, options, next) {
     db.exec(offerComments);
     db.exec(userDB);
 
-    fastify.decorate("db", db)
+    fastify.decorate("db", db);
 
     fastify.addHook("onClose", (fastify, done) => {
         db.close();
         done();
-    })
+    });
 
     next();
 }
