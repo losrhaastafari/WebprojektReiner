@@ -4,7 +4,6 @@ const changeStatusSchema = {
     properties: {
         status: {
             type: "string",
-            enum: ["Draft", "In Progress", "Active", "On Ice"],  // Mögliche Statuswerte
         },
     },
 };
@@ -16,7 +15,6 @@ const changeStatusOptions = {
             properties: {
                 status: {
                     type: "string",
-                    enum: ["Draft", "In Progress", "Active", "On Ice"],  // Enum der Statuswerte
                 },
             },
             required: ["status"],  // Der Status ist erforderlich
@@ -33,6 +31,7 @@ const changeStatusOptions = {
                 type: "object",
                 properties: {
                     error: { type: "string" },
+                    message: { type: "string" },
                 },
             },
             404: {

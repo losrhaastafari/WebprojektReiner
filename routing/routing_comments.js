@@ -1,29 +1,23 @@
 import { v4 as uuidv4 } from "uuid";
+import { canModifyOffer } from "../OfferValidation/CanModifyOffer.js";
+
 
 async function CommentRoutes(fastify, options) {
     fastify.post("/:offer_id/comments", async (request, reply) => {
         const { offer_id } = request.params;
         const { comment } = request.body;
-
-        const offer = fastify.db
-        .prepare("SELECT status FROM offer WHERE id = ?")
-        .get(offer_id);
-        if (offer.status === "Draft") {
-            return reply.code(400).send({ error: "Cannot comment on offers with Status 'Draft'" });
-        }
-
-        if (!offer_id || !comment) {
-            return reply.code(400).send({ error: "Offer ID and comment are required" });
-        }
-
-        const offerExists = fastify.db
-            .prepare("SELECT id FROM offer WHERE id = ?")
-            .get(offer_id);
-        if (!offerExists) {
-            return reply.code(404).send({ error: "Offer not found" });
-        }
+        const { username, password} = request.headers;
 
         try {
+            const addcommentOfferpermissionCheck = canModifyOffer(fastify, offer_id, username, password, "add_comment")
+        
+            if (addcommentOfferpermissionCheck.status !== 200) {                                                 
+                return reply.code(addcommentOfferpermissionCheck.status).send({ error: addcommentOfferpermissionCheck.error });
+            }
+
+            if (!offer_id || !comment) {
+                return reply.code(400).send({ error: "Offer ID and comment are required" });
+            }
             fastify.db.prepare(
                 "INSERT INTO offer_comments (offer_id, comment) VALUES (?, ?)"
             ).run(offer_id, comment);
@@ -41,7 +35,7 @@ async function CommentRoutes(fastify, options) {
 
     fastify.get("/:offer_id/comments", async (request, reply) => {
         const { offer_id } = request.params;
-
+        //Hier fehlt die canModifyOffer() Funktion, soll diese ggf. noch eingebaut werden???
         const comments = fastify.db
             .prepare("SELECT id, comment, created_at FROM offer_comments WHERE offer_id = ?")
             .all(offer_id);
@@ -56,6 +50,13 @@ async function CommentRoutes(fastify, options) {
     fastify.put("/:offer_id/comments/:comment_id", async (request, reply) => {
         const { offer_id, comment_id } = request.params;
         const { comment } = request.body;
+        const { username, password } = request.headers;
+
+        const addcommentOfferpermissionCheck = canModifyOffer(fastify, offer_id, username, password, "add_comment")
+        
+        if (addcommentOfferpermissionCheck.status !== 200) {                                                 
+            return reply.code(addcommentOfferpermissionCheck.status).send({ error: addcommentOfferpermissionCheck.error });
+        }
 
         if (!comment) {
             return reply.code(400).send({ error: "Comment is required" });
@@ -87,7 +88,15 @@ async function CommentRoutes(fastify, options) {
 
     fastify.delete("/:offer_id/comments/:comment_id", async (request, reply) => {
         const { comment_id } = request.params;
+        const { offer_id } = request.params;
+        const { username, password } = request.headers;
 
+        const addcommentOfferpermissionCheck = canModifyOffer(fastify, offer_id, username, password, "add_comment")
+        
+        if (addcommentOfferpermissionCheck.status !== 200) {                                                 
+            return reply.code(addcommentOfferpermissionCheck.status).send({ error: addcommentOfferpermissionCheck.error });
+        }
+        
         const result = fastify.db.prepare(
             "DELETE FROM offer_comments WHERE id = ?"
         ).run(comment_id);

@@ -3,3 +3,15 @@ meta {
   type: http
   seq: 1
 }
+
+patch {
+  url: http://localhost:8080/Offer/1/status
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "status": "On Ice"
+  }
+}
