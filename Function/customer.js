@@ -51,26 +51,33 @@ export function getCustomers(fastify) {
 export function updateCustomer(fastify, customerProperties) {
     const { id, ...updateFields } = customerProperties;
 
-    if (!customerProperties.id) {
-        return fastify.reply.status(400).send({ error: "ID is required." });
+    if (!id) {
+        return { status: 400, error: "ID is required." };
     }
-    console.log("Test");
-    // Set updated_at auf aktuellen SQLite-Timestamp
+
+    // Sicherstellen, dass updated_at explizit aktualisiert wird
+    updateFields.updated_at = new Date().toISOString();
+
     const setClause = Object.keys(updateFields)
         .map(key => `${key} = ?`)
-        .concat(["updated_at = datetime('now')"]) // Aktualisierung des Zeitstempels
         .join(', ');
 
     const values = Object.values(updateFields);
+    values.push(id);
 
     const statement = fastify.db.prepare(`UPDATE customerDB SET ${setClause} WHERE id = ?`);
 
     try {
-        statement.run(...values, id);
-        return { id, ...customerProperties };
+        const result = statement.run(...values);
+
+        if (result.changes > 0) {
+            return { status: 200, message: "Kunde erfolgreich aktualisiert!", updatedCustomer: customerProperties };
+        } else {
+            return { status: 404, error: "Kunde nicht gefunden oder keine Änderungen vorgenommen." };
+        }
     } catch (error) {
         fastify.log.error(error);
-        return null;
+        return { status: 500, error: "Fehler beim Aktualisieren des Kunden." };
     }
 }
 
