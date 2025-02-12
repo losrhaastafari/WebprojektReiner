@@ -5,18 +5,15 @@ meta {
 }
 
 patch {
-  url: http://localhost:8080/Offer/7/status
+
   body: json
   auth: none
 }
 
-headers {
-  username: Account-Manager
-  password: accmanag
-}
+
 
 body:json {
   {
-    "status": "On Ice"
+    "status": "In Progress"
   }
 }
