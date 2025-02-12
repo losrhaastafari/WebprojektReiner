@@ -5,13 +5,18 @@ meta {
 }
 
 patch {
-  url: http://localhost:8080/Offer/1/status
+  url: http://localhost:8080/Offer/6/status
   body: json
   auth: none
 }
 
+headers {
+  username: developer
+  password: develop
+}
+
 body:json {
   {
-    "status": "On Ice"
+    "status": "In Progress"
   }
 }

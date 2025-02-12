@@ -28,10 +28,6 @@ async function OfferRoutes(fastify, options) {
         const params = [];
     
         // Dynamische Filter hinzufügen, wenn sie in der Anfrage enthalten sind
-        if (name) {
-            query += " AND description LIKE ?";
-            params.push(`%${name}%`);
-        }
     
         if (description) {
             query += " AND description LIKE ?";
