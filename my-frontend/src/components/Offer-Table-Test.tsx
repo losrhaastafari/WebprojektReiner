@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { MDBBadge, MDBTable, MDBTableHead, MDBTableBody } from "mdb-react-ui-kit";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons"; // Importiere Icons
-import "./styles/OfferTable.css"; 
+import "../styles/OfferTable.css"; 
 
 export default function CustomerTable() {
   const [offers, setOffers] = useState([]);
