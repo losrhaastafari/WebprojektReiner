@@ -6,6 +6,7 @@ import CustomerForm from "./components/CustomerForm";
 import CustomerList from "./components/CustomerList";
 import Sidebar from "./components/Sidebar";
 import React, { useState } from 'react';
+import CustomerTable from "./components/Offer-Table-Test";
 
 export default function App() {
   const [reloadCustomers, setReloadCustomers] = useState(false);
@@ -30,9 +31,11 @@ export default function App() {
                   <CustomerList key={reloadCustomers} />
                 </>
               } />
+              <Route path="/Test" element={<CustomerTable />}></Route>
             </Routes>
           </div>
         </div>
-    </Router>
+      <div></div>
+      </Router>
   );
 }
