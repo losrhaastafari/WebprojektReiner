@@ -8,6 +8,7 @@
  */
 
 export function createOffer(fastify, offerProperties) {
+    
     const insertIntoStatement = fastify.db.prepare(
         `INSERT INTO offer (id, description, price, customer_id, status) VALUES (?, ?, ?, ?, ?)`
     );
@@ -48,6 +49,7 @@ export function getOffers(fastify) {
 
 export function updateOffer(fastify, offerProperties) {
     const { id, ...updateFields } = offerProperties;
+    
     const setClause = Object.keys(updateFields).map(key => `${key} = ?`).join(', ');
     const values = Object.values(updateFields);
 
