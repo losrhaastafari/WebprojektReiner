@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "strict": true, // Empfohlen, um strenge Typüberprüfung zu aktivieren
-    "moduleResolution": "node",
-    "target": "ESNext",
-    "module": "ESNext"
-  }
-}
