@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppSidebar } from "@/components/sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import OfferTable from "@/components/offertable"
 
 
 const geistSans = Geist({
@@ -28,18 +27,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* ✅ Sidebar-Provider sorgt für den Zustand der Sidebar */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased h-screen`}>
         <SidebarProvider>
-          <div className="flex min-h-screen">
-            {/* ✅ Sidebar einfügen */}
-            <AppSidebar />
+          <div className="flex h-full w-full">
+            {/* Sidebar bleibt links fixiert */}
+            <AppSidebar className="w-64 flex-shrink-0" />
 
-            {/* ✅ Hauptinhalt */}
-            <main className="flex-1 p-6">{children}</main>
+            {/* Hauptinhalt mit voller Breite */}
+            <main className="flex-1 w-full min-h-screen p-6">{children}</main>
           </div>
         </SidebarProvider>
-        <OfferTable/>
       </body>
     </html>
   );
