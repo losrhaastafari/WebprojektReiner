@@ -17,32 +17,32 @@ import { changeStatusSchema } from "./schemas/status.schema.js";
 import { generateTestDataSchema } from "./schemas/test.schema.js";
 import { UserSchema } from "./schemas/user.schema.js";
 import path from "path";
-import cors from '@fastify/cors';
+import cors from "@fastify/cors";
 
+// Fastify-Instanz erstellen
 const fastify = Fastify({
-    logger: true
+    logger: true // ✅ Logging aktiviert für Debugging
 });
 
+// Multipart & Static Files registrieren
 fastify.register(fastifyMultipart);
 fastify.register(fastifyStatic, {
     root: path.join(process.cwd(), "assets"),
     prefix: "/assets/",
 });
 
-//CORS integration for Frontend Deployment
 
 fastify.register(cors, {
-    origin: (origin, callback) => {
-        const allowedOrigins = ['http://localhost:8080', 'http://localhost:5173'];
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback (new Error('Not allowed by CORS'));
-        }
-    }
+    origin: "http://localhost:3000", 
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"], 
+    credentials: true,
 });
 
-
+fastify.addHook("onRequest", (request, reply, done) => {
+    console.log(`🌍 Incoming request: ${request.method} ${request.url} from ${request.headers.origin}`);
+    done();
+});
 
 fastify.addSchema(customerSchema);
 fastify.addSchema(offerSchema);
@@ -50,8 +50,9 @@ fastify.addSchema(legacyOfferSchema);
 fastify.addSchema(changeStatusSchema);
 fastify.addSchema(UserSchema);
 fastify.addSchema(generateTestDataSchema);
-fastify.register(CustomerRoutes, { prefix: "/Customer" });
+
 fastify.register(dbConnector);
+fastify.register(CustomerRoutes, { prefix: "/Customer" });
 fastify.register(OfferRoutes, { prefix: "/Offer" });
 fastify.register(FileRoutes, { prefix: "/Offer" });
 fastify.register(CommentRoutes, { prefix: "/Offer" });
@@ -61,7 +62,7 @@ fastify.register(UserRoutes, { prefix: "/User" });
 fastify.register(TestRoutes, { prefix: "/Test" });
 
 try {
-    await fastify.listen({ port: 8080 });
+    await fastify.listen({ port: 8080, host: "localhost" });
 } catch (err) {
     fastify.log.error(err);
     process.exit(1);
