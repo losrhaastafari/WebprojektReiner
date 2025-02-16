@@ -29,8 +29,14 @@ fastify.register(fastifyStatic, {
     prefix: "/assets/",
 });
 
+<<<<<<< Updated upstream
 //CORS integration for Frontend Deployment
+=======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
 
+=======
+>>>>>>> Stashed changes
 fastify.register(cors, {
     origin: (origin, callback) => {
         const allowedOrigins = ['http://localhost:8080', 'http://localhost:4000'];
