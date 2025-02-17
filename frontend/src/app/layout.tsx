@@ -23,7 +23,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <AppSidebar />
             <div className="flex-1 p-6 w-full min-w-0 overflow-x-auto">
               {children}
-              <OfferOverview />
             </div>
           </div>
         </SidebarProvider>
