@@ -6,3 +6,9 @@ table {
   th, td {
     white-space: nowrap !important;
   }
+  
+  .scroll-container {
+    max-height: 500px; /* Höhe anpassen */
+    overflow-y: auto;
+  }
+  
