@@ -21,7 +21,7 @@ function canModifyOffer(fastify, offer_id, username, password, actionType = null
     if (!user) {
         return { status: 401, error: "Invalid Credentials"};           // Falls der Benutzer nicht existiert oder falsche Zugangsdaten hat
     }
-    if (user.username === "user") {                                    //user dürfen generell keine Änderungen an Angeboten vornehmen!
+    if (user.username === "User") {                                    //user dürfen generell keine Änderungen an Angeboten vornehmen!
         return { status: 403, error: "Users cannot modify offers in general"}
     }
     
@@ -38,8 +38,14 @@ function canModifyOffer(fastify, offer_id, username, password, actionType = null
     //''''''''''''Fehlerhandling Offer-_hinzufügen_von_Kommentaren'''''''''''''
     // Entwickler dürfen keine Kommentare für "Draft"-Angeboten erstellen
     if (actionType === "add_comment" && user.username === "developer" && offer.status === "Draft") {
-        return { status: 403, error: "Developers cannot add comments to Draft offers." };
+        return { status: 403, error: "Developers cannot add comments to Draft offers" };
     }
+
+    //''''''''''''Fehlerhandling Offer-Delete''''''''''''''''''''
+    if (actionType === "delete_offer" && user.username === "user") {
+        return { status: 403, error: "Users cannot delete Offers" };
+    }
+
 
     return { 
         status: 200, 

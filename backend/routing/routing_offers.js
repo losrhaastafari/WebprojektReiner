@@ -96,7 +96,16 @@ async function OfferRoutes(fastify, options) {
 
     fastify.delete("/deleteOffer", deleteOfferOptions, async (request, reply) => {
         const { id } = request.body;
+        const { username, password } = request.headers;
+        
+        const deleteOfferpermissionCheck = canModifyOffer(fastify, id, username, password, "delete_offer")
+        
+        if (deleteOfferpermissionCheck.status !== 200) {
+            return reply.code(deleteOfferpermissionCheck.status).send({error: deleteOfferpermissionCheck.error });
+        }
+        //Die Delete-Offer Funktion sollte erst dann aufgerufen werden sobald die Berechtigungsprüfung stattgefunden hat!
         const result = deleteOffer(fastify, id);
+
         if (result.includes("not found")) { 
             return reply.code(404).send({ error: `Customer with ID ${id} not found.` });
         }

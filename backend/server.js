@@ -32,11 +32,17 @@ fastify.register(fastifyStatic, {
 });
 
 
+//CORS integration for Frontend Deployment
+
 fastify.register(cors, {
-    origin: "http://localhost:3000", 
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"], 
-    credentials: true,
+    origin: (origin, callback) => {
+        const allowedOrigins = ['http://localhost:8080', 'http://localhost:3000'];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback (new Error('Not allowed by CORS'));
+        }
+    }
 });
 
 fastify.addHook("onRequest", (request, reply, done) => {

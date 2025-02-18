@@ -78,6 +78,13 @@ body {
   }
 }
 
+/* Verhindert die automatische Rotation von Icons im Akkordeon */
+.accordion-trigger svg {
+  transform: none !important;
+  transition: none !important;
+}
+
+
 @layer base {
   * {
     @apply border-border;
