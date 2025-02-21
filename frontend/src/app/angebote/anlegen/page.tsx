@@ -8,7 +8,11 @@ import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+//Berechtigungskonzept
+import { useUser } from "@/context/UserContext";
+
 export default function CreateOfferPage() {
+  const { role } = useUser();
   const router = useRouter();
   const [formData, setFormData] = useState({
     description: "",
@@ -33,6 +37,8 @@ export default function CreateOfferPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "username": role,
+          "password": role.toLowerCase(),
         },
         body: JSON.stringify({
           description: formData.description,

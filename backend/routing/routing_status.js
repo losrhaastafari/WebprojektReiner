@@ -1,17 +1,16 @@
 import { changeStatusOptions } from "../schemas/status.schema.js";
 import { updateOfferStatus } from "../Function/offer.js";
-import { canModifyOffer } from "../OfferValidation/CanModifyOffer.js";
+import { canModifyEntity } from "../OfferValidation/CanModifyEntity.js";
 
 async function StatusRoutes(fastify, options) {
     fastify.patch("/:offer_id/status", changeStatusOptions, async (request, reply) => {
         const { offer_id } = request.params;
         const { status } = request.body;
-        const { username, password } = request.headers;     //Änderung, auch bei updateStatus werden die Berechtiuungen nun validiert - 11.02.2025
+        const { username, password } = request.headers;     //Änderung, auch bei updateStatus werden die Berechtiungen nun validiert - 11.02.2025
         
-        const updateStatuspermissionCheck = canModifyOffer(fastify, offer_id, username, password, "update_status", status)
-        
-        if (updateStatuspermissionCheck.status !==200) {
-            return reply.code(updateStatuspermissionCheck.status).send({ error: updateStatuspermissionCheck.error })
+        const canModify = canModifyEntity(fastify, username, password, "offer", "update_status", status);
+        if (canModify.status !==200) {
+            return reply.code(canModify.status).send({ error: canModify.error })
         }
         
         const updatedOffer = updateOfferStatus(fastify, offer_id, status);
