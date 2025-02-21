@@ -37,6 +37,42 @@ const offerOptions = {
     }
 };
 
+const getOfferOptions = {
+    schema: {
+        params: {
+            type: "object",
+            properties: {
+                offerId: { type: "integer" }
+            },
+            required: ["offerId"]
+        },
+        response: {
+            200: {
+                type: "object",
+                properties: {
+                    id: { type: "integer" },
+                    description: { type: "string" },
+                    price: { type: "number" },
+                    customer_id: { type: "integer" },
+                    status: { type: "string" }
+                }
+            },
+            404: {
+                type: "object",
+                properties: {
+                    error: { type: "string" }
+                }
+            },
+            500: {
+                type: "object",
+                properties: {
+                    error: { type: "string" }
+                }
+            }
+        }
+    }
+};
+
 
 const updateOfferOptions = {
     schema: {
@@ -106,4 +142,4 @@ const deleteOfferOptions = {
     }
 };
 
-export { offerSchema, offerOptions, updateOfferOptions, deleteOfferOptions };
+export { offerSchema, offerOptions, updateOfferOptions, deleteOfferOptions, getOfferOptions };

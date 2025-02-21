@@ -1,11 +1,10 @@
-import { offerOptions, updateOfferOptions, deleteOfferOptions } from "../schemas/offer.schema.js";
-import { createOffer, getOffers, updateOffer, deleteOffer } from "../Function/offer.js";
-import { canModifyOffer } from "../OfferValidation/CanModifyOffer.js";
+import { offerOptions, updateOfferOptions, deleteOfferOptions, getOfferOptions } from "../schemas/offer.schema.js";
+import { createOffer, getOfferById, updateOffer, deleteOffer } from "../Function/offer.js";
+import { canModifyEntity } from "../OfferValidation/CanModifyEntity.js";
 
 async function OfferRoutes(fastify, options) {
     fastify.post("/createOffer", offerOptions, async (request, reply) => {
         const { id, description, price, customer_id, status = "Draft" } = request.body;
-        
         const offerProperties = {
             id,
             description,
@@ -13,8 +12,19 @@ async function OfferRoutes(fastify, options) {
             customer_id,
             status
         };
+        const { username, password } = request.headers;
         
+        //Berechtigungsprüfung
+        const canModify = canModifyEntity(fastify, username, password, "offer", "create_offer")
+        if (canModify.status !== 200) {
+            return reply.code(canModify.status).send({ error: canModify.error });
+        }
+
         const offer = createOffer(fastify, offerProperties);
+
+        if(!offer){
+            reply.code(404);
+        }
         reply.code(201);
         return { offer: offer };
     });
@@ -62,11 +72,23 @@ async function OfferRoutes(fastify, options) {
             reply.code(500).send({ error: "An error occurred while retrieving the offers" });
         }
     });
-    
+
+    fastify.get("/:offerId", async (request, reply) => {
+        const { offerId } = request.params;
+
+        const offer = getOfferById(fastify, offerId);
+
+        if (offer.error) {
+            return reply.code(404).send({ error: offer.error });
+        }
+
+        return reply.code(200).send(offer);
+    });
+
     fastify.put("/updateOffer", updateOfferOptions, async (request, reply) => {
         const offerProperties = request.body;
         const updatedOffer = updateOffer(fastify, offerProperties);
-        const { id } = request.body;
+        const { id } = request.body; //ggf entfernen
         const {username, password} = request.headers;
 
         
@@ -76,12 +98,10 @@ async function OfferRoutes(fastify, options) {
             return reply.code(401).send({ error: "Unauthorized: Missing credentials" });
         }
     
-        //Berechtigungsprüfung mit canModifyOffer()
-    
-        const updateOfferpermissionCheck = canModifyOffer(fastify, id, username, password, "update_offer");
-        
-        if (updateOfferpermissionCheck.status !== 200) {                                                 
-            return reply.code(updateOfferpermissionCheck.status).send({ error: updateOfferpermissionCheck.error });
+        //Berechtigungsprüfung
+        const canModify = canModifyEntity(fastify, username, password, "offer", "update_offer");
+        if (canModify.status !== 200) {                                                 
+            return reply.code(canModify.status).send({ error: canModify.error });
         }
         
         if (!updatedOffer) {
@@ -98,11 +118,12 @@ async function OfferRoutes(fastify, options) {
         const { id } = request.body;
         const { username, password } = request.headers;
         
-        const deleteOfferpermissionCheck = canModifyOffer(fastify, id, username, password, "delete_offer")
-        
-        if (deleteOfferpermissionCheck.status !== 200) {
-            return reply.code(deleteOfferpermissionCheck.status).send({error: deleteOfferpermissionCheck.error });
+        //Berechtigungsprüfung
+        const canModify = canModifyEntity(fastify, username, password, "offer", "delete_offer")
+        if (canModify.status !== 200) {
+            return reply.code(canModify.status).send({error: canModify.error });
         }
+
         //Die Delete-Offer Funktion sollte erst dann aufgerufen werden sobald die Berechtigungsprüfung stattgefunden hat!
         const result = deleteOffer(fastify, id);
 

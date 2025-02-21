@@ -3,23 +3,23 @@
 import * as React from "react";
 import {
   ColumnDef,
-  ColumnFiltersState,
   SortingState,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
-import { ArrowUpDown, ArrowDown, ArrowUp, MoreHorizontal, Trash } from "lucide-react";
+import { Pencil, Trash, Info, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
+
+import { useRouter } from "next/navigation";
 
 interface Offer {
   id: string;
@@ -29,22 +29,24 @@ interface Offer {
   status: string;
 }
 
-export function OfferTable({ offers, onDelete }: { offers: Offer[]; onDelete: (id: string) => void }) {
+export function OfferTable({ 
+  offers, 
+  onDelete, 
+  onEdit 
+}: { 
+  offers: Offer[]; 
+  onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
+}) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  
-  // 🔄 Dynamische Höhenberechnung
-  const rowHeight = 57; // Durchschnittliche Zeilenhöhe in Pixel
-  const headerHeight = 57; // Header-Höhe
-  const maxHeight = 600; // Maximale Höhe vor Scroll
-  const tableHeight = Math.min(
-    headerHeight + (offers.length * rowHeight),
-    maxHeight
-  );
+  const router = useRouter(); // ✅ Hier wird useRouter initialisiert
+
+  const maxHeight = 600;
 
   const table = useReactTable({
     data: offers,
-    columns: columns(onDelete),
+    columns: columns(onDelete, onEdit, router), // ✅ router wird als Argument übergeben
     state: { sorting, columnFilters },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -55,6 +57,7 @@ export function OfferTable({ offers, onDelete }: { offers: Offer[]; onDelete: (i
 
   return (
     <div className="w-full space-y-4">
+      {/* 🔍 Nur nach Beschreibung filtern */}
       <div className="flex items-center py-2">
         <Input
           placeholder="Filter nach Beschreibung..."
@@ -65,10 +68,9 @@ export function OfferTable({ offers, onDelete }: { offers: Offer[]; onDelete: (i
       </div>
 
       <div className="rounded-md border relative">
-        {/* 📏 Dynamische Scroll-Area */}
         <ScrollArea 
-          className={`w-full ${offers.length > 5 ? 'h-[500px]' : 'h-auto'}`}
-          style={{ height: offers.length > 5 ? maxHeight : 'auto' }}
+          className={`w-full ${offers.length > 5 ? "h-[500px]" : "h-auto"}`}
+          style={{ height: offers.length > 5 ? maxHeight : "auto" }}
         >
           <Table className="relative">
             <TableHeader className="sticky top-0 bg-background z-10 shadow-sm">
@@ -77,7 +79,7 @@ export function OfferTable({ offers, onDelete }: { offers: Offer[]; onDelete: (i
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      className="px-4 py-3 font-medium text-left"
+                      className="px-4 py-3 font-medium text-left cursor-pointer"
                       onClick={header.column.getToggleSortingHandler()}
                     >
                       <div className="flex items-center gap-x-2">
@@ -99,22 +101,29 @@ export function OfferTable({ offers, onDelete }: { offers: Offer[]; onDelete: (i
                 </TableRow>
               ))}
             </TableHeader>
-            
+
             <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} className="hover:bg-muted/50">
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-4 py-2">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
+              {table.getRowModel().rows.length > 0 ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} className="hover:bg-muted/50">
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="px-4 py-2">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns(onDelete, onEdit, router).length} className="h-24 text-center">
+                    Keine Angebote gefunden.
+                  </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </ScrollArea>
 
-        {/* 🖐️ Empty State */}
         {offers.length === 0 && (
           <div className="p-6 text-center text-muted-foreground">
             Keine Angebote in dieser Kategorie
@@ -125,7 +134,11 @@ export function OfferTable({ offers, onDelete }: { offers: Offer[]; onDelete: (i
   );
 }
 
-const columns = (onDelete: (id: string) => void): ColumnDef<Offer>[] => [
+const columns = (
+  onDelete: (id: string) => void,
+  onEdit: (id: string) => void,
+  router: ReturnType<typeof useRouter> // ✅ Router als Argument übergeben
+): ColumnDef<Offer>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -164,36 +177,47 @@ const columns = (onDelete: (id: string) => void): ColumnDef<Offer>[] => [
   {
     accessorKey: "customer_id",
     header: "Kunden ID",
-    enableSorting: true,  
+    enableSorting: true,
   },
   {
     accessorKey: "status",
     header: "Status",
-    enableSorting: false, //Sorting wurde hier mit Absicht auf false gestellt, da der Status in der jeweiligen Liste bereits sortiert dargestellt wird, demnach ist diese Funktion überflüssig.
+    enableSorting: false, // ❌ Status kann NICHT sortiert werden
   },
   {
     accessorKey: "actions",
-    header: "Aktion",
+    header: "Aktionen",
     enableColumnFilter: false,
     enableSorting: false,
     cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(row.original.id)}>
-            ID kopieren
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-red-500" onClick={() => onDelete(row.original.id)}>
-            <Trash className="mr-2 h-4 w-4" />
-            Löschen
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex items-center gap-x-3">
+        {/* ✏️ Bearbeiten */}
+        <Button 
+          variant="ghost" 
+          className="p-2 text-blue-500 hover:bg-blue-100" 
+          onClick={() => onEdit(row.original.id)}
+        >
+          <Pencil className="h-5 w-5" />
+        </Button>
+
+        {/* 🗑️ Löschen */}
+        <Button 
+          variant="ghost" 
+          className="p-2 text-red-500 hover:bg-red-100" 
+          onClick={() => onDelete(row.original.id)}
+        >
+          <Trash className="h-5 w-5" />
+        </Button>
+
+        {/* ℹ️ Details */}
+        <Button 
+          variant="ghost" 
+          className="p-2 text-gray-500 hover:bg-gray-100" 
+          onClick={() => router.push(`/angebote/detailansicht/${row.original.id}`)} // ✅ Korrekte Navigation
+        >
+          <Info className="h-5 w-5" />
+        </Button>
+      </div>
     ),
   },
 ];

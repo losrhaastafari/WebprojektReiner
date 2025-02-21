@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { canModifyOffer } from "../OfferValidation/CanModifyOffer.js";
+import { canModifyEntity } from "../OfferValidation/CanModifyEntity.js";
 
 
 async function CommentRoutes(fastify, options) {
@@ -9,15 +9,21 @@ async function CommentRoutes(fastify, options) {
         const { username, password} = request.headers;
 
         try {
-            const addcommentOfferpermissionCheck = canModifyOffer(fastify, offer_id, username, password, "add_comment")
-        
-            if (addcommentOfferpermissionCheck.status !== 200) {                                                 
-                return reply.code(addcommentOfferpermissionCheck.status).send({ error: addcommentOfferpermissionCheck.error });
-            }
-
             if (!offer_id || !comment) {
                 return reply.code(400).send({ error: "Offer ID and comment are required" });
             }
+            // Abruf der Status des Angebots für spezifische Berechtigungsprüfung abhängig vom Status des Angebotes
+
+            const offer = fastify.db.perpare("SELECT status from offer WHERE id = ?").get(offer_id);
+            if (!offer){
+                return reply.code(404).send({error: "Offer not found"});
+            }
+            
+            const canModify = canModifyEntity(fastify, username, password, "comment", "add_comment", offer.status);
+            if (canModify.status !== 200) {
+                return reply.code(canModify.status).send({ error: canModify.error });
+            }
+            
             fastify.db.prepare(
                 "INSERT INTO offer_comments (offer_id, comment) VALUES (?, ?)"
             ).run(offer_id, comment);
@@ -47,19 +53,20 @@ async function CommentRoutes(fastify, options) {
         return reply.code(200).send(comments);
     });
 
-    fastify.put("/:offer_id/comments/:comment_id", async (request, reply) => {
+    //Route für das updaten eines Kommentars 
+    fastify.put("/:offer_id/comments/:comment_id", async (request, reply) => {      
         const { offer_id, comment_id } = request.params;
         const { comment } = request.body;
         const { username, password } = request.headers;
 
-        const addcommentOfferpermissionCheck = canModifyOffer(fastify, offer_id, username, password, "add_comment")
-        
-        if (addcommentOfferpermissionCheck.status !== 200) {                                                 
-            return reply.code(addcommentOfferpermissionCheck.status).send({ error: addcommentOfferpermissionCheck.error });
-        }
 
         if (!comment) {
             return reply.code(400).send({ error: "Comment is required" });
+        }
+
+        const canModify = canModifyEntity(fastify, username, password, "comment", "update_comment");
+        if (canModify.status !== 200) {
+            return reply.code(canModify.status).send({ error: canModify.error });
         }
 
         const commentExists = fastify.db
@@ -91,10 +98,9 @@ async function CommentRoutes(fastify, options) {
         const { offer_id } = request.params;
         const { username, password } = request.headers;
 
-        const addcommentOfferpermissionCheck = canModifyOffer(fastify, offer_id, username, password, "add_comment")
-        
-        if (addcommentOfferpermissionCheck.status !== 200) {                                                 
-            return reply.code(addcommentOfferpermissionCheck.status).send({ error: addcommentOfferpermissionCheck.error });
+        const canModify = canModifyEntity(fastify, offer_id, username, password, "comment", "delete_comment")
+        if (canModify.status !== 200) {                                                 
+            return reply.code(canModify.status).send({ error: canModify.error });
         }
         
         const result = fastify.db.prepare(

@@ -54,11 +54,6 @@ export default function OfferOverview() {
   // 🟢 Löschfunktion mit Berechtigungsprüfung
   const deleteOffer = async (id: string) => {
     try {
-      if (role === "username") {
-        toast.error("⚠️ Keine Berechtigung zum Löschen!");
-        return;
-      }
-
       const response = await fetch("http://localhost:8080/Offer/deleteOffer", {
         method: "DELETE",
         headers: {

@@ -47,6 +47,24 @@ export function getOffers(fastify) {
     }
 }
 
+export function getOfferById(fastify, offerId) {
+    const statement = fastify.db.prepare(`SELECT * FROM offer WHERE id = ?`);
+
+    try {
+        const offer = statement.get(offerId);
+
+        if (!offer) {
+            return { error: "Angebot nicht gefunden." };
+        }
+
+        return offer;
+    } catch (error) {
+        fastify.log.error("Fehler beim Abrufen des Angebots:", error);
+        return { error: "Fehler beim Abrufen des Angebots." };
+    }
+}
+
+
 export function updateOffer(fastify, offerProperties) {
     const { id, ...updateFields } = offerProperties;
     
