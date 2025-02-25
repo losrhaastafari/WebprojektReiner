@@ -8,32 +8,45 @@
  */
 
 export function createOffer(fastify, offerProperties) {
-    
     const insertIntoStatement = fastify.db.prepare(
-        `INSERT INTO offer (id, description, price, customer_id, status) VALUES (?, ?, ?, ?, ?)`
+      `INSERT INTO offer (id, description, price, customer_id, status) VALUES (?, ?, ?, ?, ?)`
     );
     const selectStatement = fastify.db.prepare(
-        `SELECT * from offer WHERE id=?`
+      `SELECT * FROM offer WHERE id = ?`
     );
-
+  
     const offerToCreate = {
-        id: offerProperties.id,
-        description: offerProperties.description,
-        price: offerProperties.price,
-        customer_id: offerProperties.customer_id,
-        status: offerProperties.status,
+      id: offerProperties.id,
+      description: offerProperties.description,
+      price: offerProperties.price,
+      customer_id: offerProperties.customer_id,
+      status: offerProperties.status,
     };
-
+  
     try {
-        const { id, description, price, customer_id, status } = offerToCreate;
-        const info = insertIntoStatement.run(id, description, price, customer_id, status);
-        const createdOffer = selectStatement.get(info.lastInsertRowid);
-        return createdOffer;
+      // Prüfe, ob der Kunde existiert
+      const customer = fastify.db
+        .prepare(`SELECT * FROM customerDB WHERE id = ?`)
+        .get(offerToCreate.customer_id);
+  
+      if (!customer) {
+        // Rückgabe eines Fehlerobjekts, ähnlich wie bei canModify
+        return { status: 403, error: "Customer doesn't exist" };
+      }
+  
+      const { id, description, price, customer_id, status } = offerToCreate;
+      const info = insertIntoStatement.run(id, description, price, customer_id, status);
+      const createdOffer = selectStatement.get(info.lastInsertRowid);
+      return createdOffer;
     } catch (error) {
-        fastify.log.error(error);
-        return null;
+      fastify.log.error(error);
+      return {
+        error: error.message,
+        status: 500,
+      };
     }
-}
+  }
+  
 
 export function getOffers(fastify) {
     const statement = fastify.db.prepare(`SELECT * from offer`);

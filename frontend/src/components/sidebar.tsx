@@ -36,10 +36,15 @@ import {
 
 // **Liste der verfügbaren Rollen**
 const roles = ["Account-Manager", "Developer", "User"];
+const rolePasswords: Record<string, string> = {
+  "User": "user",
+  "Developer": "developer",
+  "Account-Manager": "account-manager",
+};
 
 export function AppSidebar() {
   const { open, toggleSidebar } = useSidebar();
-  const { role, setRole } = useUser(); // ✅ UserContext verwenden
+  const { role, setRole, setCredentials } = useUser(); // ✅ UserContext verwenden
 
   return (
     <Sidebar collapsible="icon" className={`flex flex-col ${open ? "w-64" : "w-16"} h-screen`}>
@@ -70,9 +75,9 @@ export function AppSidebar() {
                       </SidebarMenuItem>
                       <SidebarMenuItem>
                         <SidebarMenuButton asChild>
-                          <a href="/angebote/bearbeiten" className="flex items-center space-x-2 p-2">
+                          <a href="/anlegen" className="flex items-center space-x-2 p-2">
                             <Edit className="size-4" />
-                            <span>Angebote bearbeiten</span>
+                            <span>Angebote anlegen</span>
                           </a>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -96,9 +101,9 @@ export function AppSidebar() {
                       </SidebarMenuItem>
                       <SidebarMenuItem>
                         <SidebarMenuButton asChild>
-                          <a href="/kunden/bearbeiten" className="flex items-center space-x-2 p-2">
+                          <a href="/anlegen" className="flex items-center space-x-2 p-2">
                             <Edit className="size-4" />
-                            <span>Kunde bearbeiten</span>
+                            <span>Kunde anlegen</span>
                           </a>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -123,7 +128,10 @@ export function AppSidebar() {
               {roles.map((r) => (
                 <DropdownMenuItem
                   key={r}
-                  onClick={() => setRole(r)} // ✅ UserContext-Update
+                  onClick={() => {
+                    setRole(r);
+                    setCredentials(r, rolePasswords[r]); // ✅ Benutzername und Passwort setzen
+                  }}
                   className={`cursor-pointer p-2 hover:bg-gray-200 ${
                     role === r ? "font-bold text-blue-500" : ""
                   }`}

@@ -17,6 +17,9 @@ function canModifyEntity(fastify, username, password, entityType = "offer", acti
             if (actionType === "update_status" && status && !["Draft", "Active", "In Progress", "On Ice"].includes(status)) {
                 return { status: 400, error: "Invalid status provided. Allowed values: Draft, Active, In Progress, On Ice" };
             }
+            if (actionType === "create_offer" && status && !["Draft", "Active", "In Progress", "On Ice"].includes(status)) {
+                return { status: 400, error: "Invalid status provided. Allowed values: Draft, Active, In Progress, On Ice" };
+            }
             // if (actionType === "create_offer") --> Berechtigungslogik für anlegen eines Angebots
 
         // Berechtigungsprüfung für Entitätstyp "comment"

@@ -11,6 +11,7 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import { OfferTable } from "./offertable";
+import { OfferDetailTable } from "./offerdetailtable"; // ✅ Import der OfferDetailTable-Komponente
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -25,9 +26,10 @@ interface Offer {
 
 export default function OfferOverview() {
   const [offers, setOffers] = React.useState<Offer[]>([]);
+  const [selectedOffer, setSelectedOffer] = React.useState<Offer | null>(null); // ✅ Zustand für das ausgewählte Angebot
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
-  const { role } = useUser(); // ✅ Aktuelle Benutzerrolle aus dem Kontext
+  const { role, username, password } = useUser(); // ✅ Aktuelle Benutzerrolle aus dem Kontext
   const router = useRouter();
 
   // 🟢 API-Abfrage
@@ -58,8 +60,8 @@ export default function OfferOverview() {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "username": role, // ✅ Benutzerrolle im Header senden
-          "password": role.toLowerCase(), // Simulierte Authentifizierung
+          "username": username || "", // ✅ Benutzerrolle im Header senden
+          "password": password || "", // Simulierte Authentifizierung
         },
         body: JSON.stringify({ id }),
       });
@@ -96,7 +98,7 @@ export default function OfferOverview() {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Angebotsübersicht</h1>
         {role !== "User" && (
-          <Link href="/angebote/anlegen">
+          <Link href="/anlegen">
             <Button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
               + Neues Angebot
             </Button>
@@ -111,7 +113,7 @@ export default function OfferOverview() {
           <OfferTable
             offers={statusGroups.draft}
             onDelete={deleteOffer}
-            onRowClick={(id) => router.push(`/angebote/bearbeiten?id=${id}`)}
+            onRowClick={(id) => setSelectedOffer(offers.find((o) => o.id === id) || null)} // ✅ Angebot auswählen
           />
         </section>
       )}
@@ -123,7 +125,7 @@ export default function OfferOverview() {
           <OfferTable
             offers={statusGroups.active}
             onDelete={deleteOffer}
-            onRowClick={(id) => router.push(`/angebote/bearbeiten?id=${id}`)}
+            onRowClick={(id) => setSelectedOffer(offers.find((o) => o.id === id) || null)} // ✅ Angebot auswählen
           />
         </section>
       )}
@@ -139,11 +141,20 @@ export default function OfferOverview() {
               <OfferTable
                 offers={statusGroups.onIce}
                 onDelete={deleteOffer}
-                onRowClick={(id) => router.push(`/angebote/bearbeiten?id=${id}`)}
+                onRowClick={(id) => setSelectedOffer(offers.find((o) => o.id === id) || null)} // ✅ Angebot auswählen
               />
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+      )}
+
+      {/* 🟢 Detailansicht des ausgewählten Angebots */}
+      {selectedOffer && (
+        <OfferDetailTable
+          offer={selectedOffer}
+          onDelete={deleteOffer}
+          onEdit={(id) => router.push(`/angebote/bearbeiten?id=${id}`)}
+        />
       )}
     </div>
   );
