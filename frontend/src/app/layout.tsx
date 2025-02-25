@@ -22,7 +22,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
+      <head>
+        <link rel="icon" type="image/svg+xml" href="/Prismarine-Solutions-Icon.svg" />
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen bg-gradient-to-b from-gray-100 to-blue-50`}> 
         <UserProvider>
           <SidebarProvider>
             <div className="flex flex-1">
@@ -38,11 +41,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   {/* 🏠 Nur auf der Startseite sichtbar */}
                   {isHomePage && (
                     <>
-                      <div className={`text-center text-4xl ${lobster.variable} my-6`}>
-                        Willkommen auf der Angebotsseite!
+                      <div className="bg-white shadow-lg rounded-xl p-10 text-center">
+                        <h2 className="text-6xl font-extrabold text-black-600">Prismarine Solutions</h2>
+                        <p className="text-gray-500 text-lg mt-4">
+                          Ihre digitale Zukunft beginnt hier – Innovation, Effizienz und maßgeschneiderte Lösungen.
+                        </p>
                       </div>
-                      <DashboardStats />
-                      <OfferOverview />
+                      <div className="mt-10">
+                        <DashboardStats />
+                      </div>
+                      <div className="mt-10">
+                        <OfferOverview />
+                      </div>
                     </>
                   )}
 

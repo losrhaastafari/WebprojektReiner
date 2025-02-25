@@ -41,28 +41,32 @@ export function OfferDetailTable({
       <div className="rounded-md border relative">
         <ScrollArea className="w-full h-auto">
           <Table className="relative">
-            <TableHeader className="sticky top-0 bg-background z-10 shadow-sm">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id} className="px-4 py-3 font-medium text-left">
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Beschreibung</TableHead>
+                <TableHead>Preis</TableHead>
+                <TableHead>Kunde</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Aktionen</TableHead>
+              </TableRow>
             </TableHeader>
-
             <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} className="hover:bg-muted/50">
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-4 py-2">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              <TableRow>
+                <TableCell>{offer.id}</TableCell>
+                <TableCell>{offer.description}</TableCell>
+                <TableCell>{offer.price}</TableCell>
+                <TableCell>{offer.customer_id}</TableCell>
+                <TableCell>{offer.status}</TableCell>
+                <TableCell>
+                  <Button variant="ghost" className="p-2 text-blue-500" onClick={() => onEdit(offer.id)}>
+                    <Pencil className="h-5 w-5" />
+                  </Button>
+                  <Button variant="ghost" className="p-2 text-red-500" onClick={() => onDelete(offer.id)}>
+                    <Trash className="h-5 w-5" />
+                  </Button>
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </ScrollArea>
@@ -71,54 +75,41 @@ export function OfferDetailTable({
   );
 }
 
-const columns = (
-  onDelete: (id: string) => void,
-  onEdit: (id: string) => void
-): ColumnDef<Offer>[] => [
-  {
-    accessorKey: "id",
-    header: "Angebot ID",
-  },
-  {
-    accessorKey: "description",
-    header: "Beschreibung",
-  },
-  {
-    accessorKey: "price",
-    header: "Preis (€)",
-    cell: ({ row }) => <div>{row.getValue("price")} €</div>,
-  },
-  {
-    accessorKey: "customer_id",
-    header: "Kunden ID",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-  },
-  {
-    accessorKey: "actions",
-    header: "Aktionen",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-x-3">
-        {/* ✏️ Bearbeiten */}
-        <Button 
-          variant="ghost" 
-          className="p-2 text-blue-500 hover:bg-blue-100" 
-          onClick={() => onEdit(row.original.id)}
-        >
-          <Pencil className="h-5 w-5" />
-        </Button>
-
-        {/* 🗑️ Löschen */}
-        <Button 
-          variant="ghost" 
-          className="p-2 text-red-500 hover:bg-red-100" 
-          onClick={() => onDelete(row.original.id)}
-        >
-          <Trash className="h-5 w-5" />
-        </Button>
-      </div>
-    ),
-  },
-];
+function columns(onDelete: (id: string) => void, onEdit: (id: string) => void): ColumnDef<Offer>[] {
+  return [
+    {
+      accessorKey: "id",
+      header: "ID",
+    },
+    {
+      accessorKey: "description",
+      header: "Beschreibung",
+    },
+    {
+      accessorKey: "price",
+      header: "Preis",
+    },
+    {
+      accessorKey: "customer_id",
+      header: "Kunde",
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+    },
+    {
+      id: "actions",
+      header: "Aktionen",
+      cell: ({ row }) => (
+        <div className="flex space-x-2">
+          <Button variant="ghost" className="p-2 text-blue-500" onClick={() => onEdit(row.original.id)}>
+            <Pencil className="h-5 w-5" />
+          </Button>
+          <Button variant="ghost" className="p-2 text-red-500" onClick={() => onDelete(row.original.id)}>
+            <Trash className="h-5 w-5" />
+          </Button>
+        </div>
+      ),
+    },
+  ];
+}

@@ -13,20 +13,18 @@ async function OfferRoutes(fastify, options) {
             status
         };
         const { username, password } = request.headers;
-        
         //Berechtigungsprüfung
-        const canModify = canModifyEntity(fastify, username, password, "offer", "create_offer")
+        const canModify = canModifyEntity(fastify, username, password, "offer", "create_offer", status)
         if (canModify.status !== 200) {
             return reply.code(canModify.status).send({ error: canModify.error });
         }
 
         const offer = createOffer(fastify, offerProperties);
 
-        if(!offer){
-            reply.code(404);
+        if(offer.error){
+            return reply.code(400).send({ error: offer.error });
         }
-        reply.code(201);
-        return { offer: offer };
+        return reply.code(201).send({ offer: offer });
     });
 
     fastify.get("/getOffers", async (request, reply) => {
@@ -104,7 +102,7 @@ async function OfferRoutes(fastify, options) {
             return reply.code(canModify.status).send({ error: canModify.error });
         }
         
-        if (!updatedOffer) {
+        if (updatedOffer.error) {
             return reply.code(500).send({ error: "Could not update offer"});
         }
 
