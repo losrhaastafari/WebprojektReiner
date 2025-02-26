@@ -11,6 +11,10 @@ function canModifyEntity(fastify, username, password, entityType = "offer", acti
         if (user.username === "User") {
             return { status: 403, error: "Users cannot modify in general" };
         }
+
+        if (status === "On Ice") {
+            return { status: 403, error: "Offers with status On Ice cannot be modified" };
+        }
         // Berechtigungsprüfung für Entitätstyp "offer"
         if (entityType === "offer") {
             if (actionType === "update_status" && status && !["Draft", "Active", "In Progress", "On Ice"].includes(status)) {
