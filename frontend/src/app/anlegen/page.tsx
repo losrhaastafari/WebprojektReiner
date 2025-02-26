@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
@@ -41,6 +41,27 @@ export default function Page() {
     email: "",
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [customers, setCustomers] = useState<Array<{ id: number; name: string }>>([]);
+
+  const fetchCustomers = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/Customer/getCustomers");
+      if (!response.ok) throw new Error("Fehler beim Laden der Kunden");
+      const data = await response.json();
+      if (!Array.isArray(data)) throw new Error("Ungültiges Kundenformat");
+      setCustomers(data.map(({ id, name }) => ({ id, name }))); // Nur relevante Felder speichern
+    } catch (error) {
+      toast.error("❌ Fehler beim Laden der Kunden: " + error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+  
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   // Funktion für Datei-Auswahl über Button
@@ -132,16 +153,16 @@ export default function Page() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "username": role,
-          "password": role.toLowerCase(),
+          "username": username || "", // ✅ Benutzerrolle im Header senden
+          "password": password || "", // Simulierte Authentifizierung
         },
         body: JSON.stringify(customerData),
       });
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Fehler beim Erstellen des Kunden");
-
       toast.success("✅ Kunde erfolgreich erstellt!");
+      fetchCustomers();
     } catch (error: any) {
       toast.error(`❌ ${error.message}`);
     }
@@ -180,16 +201,30 @@ export default function Page() {
             />
           </div>
           <div>
-            <Label htmlFor="customer_id">Kunden-ID</Label>
-            <Input
-              id="customer_id"
-              type="number"
-              placeholder="Kunden-ID"
-              value={offerData.customer_id}
-              onChange={(e) =>
-                setOfferData({ ...offerData, customer_id: e.target.value })
-              }
-            />
+            <Label htmlFor="customer_id">Kunde</Label>
+            {isLoading ? (
+              <p>Lädt Kunden...</p>
+            ) : (
+              <Select
+                value={offerData.customer_id}
+                onValueChange={(value) => setOfferData({ ...offerData, customer_id: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Kunden auswählen" />
+                </SelectTrigger>
+                <SelectContent>
+                  {customers.length > 0 ? (
+                    customers.map((customer) => (
+                      <SelectItem key={customer.id} value={customer.id.toString()}>
+                        {customer.name} (ID: {customer.id})
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="">Keine Kunden verfügbar</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            )}
           </div>
           <div>
             <Label htmlFor="status">Status</Label>

@@ -16,24 +16,27 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 // 🎯 Provider-Komponente
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  const [role, setRole] = useState<string>(() => {
-    return localStorage.getItem("userRole") || "User"; // ✅ Direkt aus dem localStorage initialisieren
-  });
+  const [role, setRole] = useState<string>("User");
+  const [username, setUsername] = useState<string | null>(null);
+  const [password, setPassword] = useState<string | null>(null);
 
-  const [username, setUsername] = useState<string | null>(() => {
-    return localStorage.getItem("username") || null;
-  });
-
-  const [password, setPassword] = useState<string | null>(() => {
-    return localStorage.getItem("password") || null;
-  });
+  // `useEffect` wird nur im Browser ausgeführt
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setRole(localStorage.getItem("userRole") || "User");
+      setUsername(localStorage.getItem("username") || null);
+      setPassword(localStorage.getItem("password") || null);
+    }
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem("userRole", role);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("userRole", role);
+    }
   }, [role]);
 
   useEffect(() => {
-    if (username && password) {
+    if (typeof window !== "undefined" && username && password) {
       localStorage.setItem("username", username);
       localStorage.setItem("password", password);
     }
@@ -42,12 +45,14 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const setCredentials = (newUsername: string | null, newPassword: string | null) => {
     setUsername(newUsername);
     setPassword(newPassword);
-    if (newUsername && newPassword) {
-      localStorage.setItem("username", newUsername);
-      localStorage.setItem("password", newPassword);
-    } else {
-      localStorage.removeItem("username");
-      localStorage.removeItem("password");
+    if (typeof window !== "undefined") {
+      if (newUsername && newPassword) {
+        localStorage.setItem("username", newUsername);
+        localStorage.setItem("password", newPassword);
+      } else {
+        localStorage.removeItem("username");
+        localStorage.removeItem("password");
+      }
     }
   };
 

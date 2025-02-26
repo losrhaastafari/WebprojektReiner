@@ -14,7 +14,7 @@ async function CommentRoutes(fastify, options) {
             }
             // Abruf der Status des Angebots für spezifische Berechtigungsprüfung abhängig vom Status des Angebotes
 
-            const offer = fastify.db.perpare("SELECT status from offer WHERE id = ?").get(offer_id);
+            const offer = fastify.db.prepare("SELECT status from offer WHERE id = ?").get(offer_id);
             if (!offer){
                 return reply.code(404).send({error: "Offer not found"});
             }
