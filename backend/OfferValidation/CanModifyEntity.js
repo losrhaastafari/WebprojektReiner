@@ -20,7 +20,7 @@ function canModifyEntity(fastify, username, password, entityType = "offer", acti
                 return { status: 400, error: "Invalid status provided. Allowed values: Draft, Active, In Progress, On Ice" };
             }
             // if (actionType === "create_offer") --> Berechtigungslogik für anlegen eines Angebots
-
+        }
         // Berechtigungsprüfung für Entitätstyp "comment"
         if (entityType === "comment") {
             if (actionType === "add_comment" && user.username === "Developer" && status === "Draft") {
@@ -39,8 +39,6 @@ function canModifyEntity(fastify, username, password, entityType = "offer", acti
             if (actionType === "create_customer")
             if (actionType === "update_customer")
         }*/
-    }
-
         return { status: 200, allowed: true, message: "The entity can be successfully modified." };
     } catch (error) {
         fastify.log.error("Unexpected error in canModifyEntity:", error);

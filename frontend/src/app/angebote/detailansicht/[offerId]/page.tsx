@@ -124,8 +124,10 @@ export default function OfferDetailPage() {
         body: JSON.stringify({ comment: newComment }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Fehler beim Hinzufügen des Kommentars");
+        throw new Error(data.error || "Fehler beim Löschen");
       }
 
       setNewComment("");
