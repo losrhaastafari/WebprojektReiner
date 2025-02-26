@@ -102,10 +102,6 @@ export default function OfferDetailPage() {
       });
   }, [offerId]);
 
-  React.useEffect(() => {
-    fetchComments();
-  }, [fetchComments]);
-
   // 🟢 Funktion zum Hinzufügen eines Kommentars
   const handleAddComment = async () => {
     if (!newComment.trim()) {
