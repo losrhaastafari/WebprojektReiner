@@ -133,6 +133,11 @@ export default function Page() {
     try {
       const response = await fetch(`http://localhost:8080/Offer/${offerId}/files`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "username": username || "", // ✅ Benutzerrolle im Header senden
+          "password": password || "", // Simulierte Authentifizierung
+        },
         body: formData,
       });
 
@@ -228,17 +233,22 @@ export default function Page() {
           </div>
           <div>
             <Label htmlFor="status">Status</Label>
-            <Input
-              id="status"
-              type="text"
-              placeholder="Status"
+            <Select
               value={offerData.status}
-              onChange={(e) =>
-                setOfferData({ ...offerData, status: e.target.value })
-              }
-            />
+              onValueChange={(value) => setOfferData({ ...offerData, status: value })}
+            >
+              <SelectTrigger id="status">
+                <SelectValue placeholder="Status wählen" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Draft">Draft</SelectItem>
+                <SelectItem value="Active">Active</SelectItem>
+                <SelectItem value="In Progress">In Progress</SelectItem>
+                <SelectItem value="On Ice">On Ice</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-
+          
           {/* Datei-Upload mit Drag & Drop und Button */}
           <div className="bg-gray-400 p-4 rounded-xl">
             <Label>Dokumente hochladen</Label>
