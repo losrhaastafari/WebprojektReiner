@@ -12,9 +12,6 @@ function canModifyEntity(fastify, username, password, entityType = "offer", acti
             return { status: 403, error: "Users cannot modify in general" };
         }
 
-        if (status === "On Ice") {
-            return { status: 403, error: "Offers with status On Ice cannot be modified" };
-        }
         // Berechtigungsprüfung für Entitätstyp "offer"
         if (entityType === "offer") {
             if (actionType === "update_status" && status && !["Draft", "Active", "In Progress", "On Ice"].includes(status)) {
@@ -29,6 +26,9 @@ function canModifyEntity(fastify, username, password, entityType = "offer", acti
         if (entityType === "comment") {
             if (actionType === "add_comment" && user.username === "Developer" && status === "Draft") {
                 return { status: 403, error: "Developers cannot add comments to Draft offers" };
+            }
+            if (actionType === "add_comment" && status === "On Ice") {
+                return { status: 403, error: "Offers with Status On Ice cannot be modified" };
             }
             //if (actionType === "update_comment") --> spezifische Berechtigungslogik für das updaten eines comments
             //if (actionType === "delete_comment")
