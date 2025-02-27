@@ -98,7 +98,7 @@ async function CommentRoutes(fastify, options) {
         const { offer_id } = request.params;
         const { username, password } = request.headers;
 
-        const canModify = canModifyEntity(fastify, offer_id, username, password, "comment", "delete_comment")
+        const canModify = canModifyEntity(fastify, username, password, "comment", "delete_comment")
         if (canModify.status !== 200) {                                                 
             return reply.code(canModify.status).send({ error: canModify.error });
         }

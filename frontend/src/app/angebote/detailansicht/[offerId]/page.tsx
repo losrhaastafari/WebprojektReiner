@@ -72,6 +72,8 @@ export default function OfferDetailPage() {
     }
   };
 
+
+
   // Dateien hochladen
   const handleFileUpload = async (numericOfferId: string) => {
     const formData = new FormData();
@@ -162,7 +164,7 @@ export default function OfferDetailPage() {
     if (!newComment.trim()) {
       toast.error("❌ Kommentar darf nicht leer sein!");
       return;
-    }
+    };
 
     try {
       const response = await fetch(`http://localhost:8080/Offer/${numericOfferId}/comments`, {
@@ -262,14 +264,12 @@ export default function OfferDetailPage() {
     <Button type="button" onClick={handleFileButtonClick} className="mt-3">
       ➕ Datei hinzufügen
     </Button>
-
-    {/* Neuer Button für das Hochladen */}
-    <Button type="button" onClick={() => handleFileUpload(numericOfferId)} className="mt-3 bg-blue-500 text-white hover:bg-blue-600">
+  </div>
+  {/* Neuer Button für das Hochladen */}
+  <Button type="button" onClick={() => handleFileUpload(numericOfferId)} className="mt-3 bg-blue-500 text-white hover:bg-blue-600">
       ⬆️ Dokument hochladen
     </Button>
-  </div>
-</section>
-
+  </section>
       </div>
   );
 }
