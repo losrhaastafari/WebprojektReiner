@@ -36,22 +36,27 @@ export default function OfferOverview() {
   React.useEffect(() => {
     fetch("http://localhost:8080/Offer/getOffers")
       .then((res) => {
-        if (!res.ok) throw new Error("Serverfehler");
+        if (!res.ok) {
+          toast.error("Keine Angebote vorhanden") // ✅ Nur echte Fehler werden geworfen
+        }
         return res.json();
       })
       .then((data) => {
-        if (Array.isArray(data)) {
-          setOffers(data);
+        if (Array.isArray(data) && data.length > 0) {
+          setOffers(data); 
+          setError(null); // ✅ Kein Fehler, wenn Daten vorhanden sind
         } else {
-          throw new Error("Ungültiges Datenformat");
+          setOffers([]); // ✅ Leeres Array setzen
         }
       })
       .catch((err) => {
         console.error("Fehler:", err);
-        setError(err.message);
+        setError("Serverfehler: " + err.message); // ✅ Nur echte Serverfehler anzeigen
       })
       .finally(() => setLoading(false));
   }, []);
+  
+  
 
   // 🟢 Löschfunktion mit Berechtigungsprüfung
   const deleteOffer = async (id: string) => {

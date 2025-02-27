@@ -90,6 +90,7 @@ async function OfferRoutes(fastify, options) {
         const {username, password} = request.headers;
 
         
+        
         //Fehlermeldung, falls keine Anmeldedaten übermittelt wurden!
 
         if (!username || !password) {

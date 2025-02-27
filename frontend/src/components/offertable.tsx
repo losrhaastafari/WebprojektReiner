@@ -195,7 +195,7 @@ const columns = (
         <Button 
           variant="ghost" 
           className="p-2 text-blue-500 hover:bg-blue-100" 
-          onClick={() => onEdit(row.original.id)}
+          onClick={() => router.push(`/angebote/bearbeiten?id=${row.original.id}`)} // ✅ Korrekte Navigation
         >
           <Pencil className="h-5 w-5" />
         </Button>
